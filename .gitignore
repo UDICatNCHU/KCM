@@ -1,0 +1,6 @@
+.idea/
+venv
+__pycache__
+*.log
+.term_pair_freq*
+ChineseWikiRawData
