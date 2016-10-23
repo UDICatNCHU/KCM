@@ -26,8 +26,7 @@ make install
 
 ## Run
 
-( This command must be executed in the directory which has `Makefile` )
-* `make run`
+* `make run` ( This command must be executed in the directory which has `Makefile` )
 * Generate sqlite db file from term_pair-freq text file：`python3 term_pair_freq_to_db.py -i=TERM_PAIR_FREQ_FILE -o=DB_FILE`
 
 * Get top n correlated terms from kcm database：`python3 get_top_n_cor_terms_from_db.py -i=KCM_DB -t=BASE_TERM -N=HOW_MANY_COR_TERMS`
@@ -89,7 +88,7 @@ For the versions available, see the [tags on this repository](https://github.com
 
 ## Contributors
 
-* **范要中** [教授](http://web.nchu.edu.tw/~yfan/)
+* **范耀中** [教授](http://web.nchu.edu.tw/~yfan/)
 * **黃思穎**
 * **陳聖軒**
 * **Yen-Ju Lee**
