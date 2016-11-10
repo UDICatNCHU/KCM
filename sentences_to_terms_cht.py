@@ -12,8 +12,8 @@ import os.path, sys
 def PosTokenizer(input, output, mission, save=None, remove=None):
     # jieba.enable_parallel()
     # jieba.set_dictionary('dict.txt.big.txt')
-    jieba.load_userdict('dict.txt.big.txt')
-    jieba.load_userdict("NameDict_Ch_v2")
+    jieba.load_userdict('dictionary/dict.txt.big.txt')
+    jieba.load_userdict("dictionary/NameDict_Ch_v2")
     f = open(input, 'r')
     f2 = open(output, 'a')
     if save != None and remove != None:

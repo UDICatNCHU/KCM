@@ -12,22 +12,19 @@ import logging
 import errno
 import argparse
 
+from pathlib import Path
 from threading import Thread
 
 
-# http://stackoverflow.com/questions/10840533/most-pythonic-way-to-delete-a-file-which-may-not-exist
 def remove_file_if_exist(file_name):
     """Remove file if it exist
 
     Args:
         file_name: name of the file to be removed
     """
-    try:
+    file = Path(file_name)
+    if file.is_file():
         os.remove(file_name)
-    except OSError as e:  # this would be "except OSError, e:" before Python 2.6
-        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
-            raise  # re-raise exception if a different error occurred
-
 
 def get_args():
     """Return args"""
