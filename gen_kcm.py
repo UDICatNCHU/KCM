@@ -14,7 +14,36 @@ import argparse
 
 from pathlib import Path
 from threading import Thread
+from functools import wraps
 
+# def queryString_required(strList):
+# 	"""	An decorator checking whether queryString key is valid or not
+# 	Args:
+# 		str: allowed queryString key
+#
+# 	Returns:
+# 		if contains invalid queryString key, it will raise exception.
+# 	"""
+# 	def _dec(function):
+# 		@wraps(function)
+# 		def _wrap(request, *args, **kwargs):
+# 			for i in strList:
+# 				if i not in request.GET:
+# 					raise Http404("api does not exist")
+# 			return function(request, *args, **kwargs)
+# 		return _wrap
+# 	return _dec
+
+def timing(func):
+    @wraps(func)
+    def wrap(*args, **kw):
+        ts = time.time()
+        result = func(*args, **kw)
+        te = time.time()
+        logging.info(
+            'It cost {} seconds to do {}'.format(te-ts, func.__name__))
+        return result
+    return wrap
 
 def remove_file_if_exist(file_name):
     """Remove file if it exist
@@ -90,7 +119,7 @@ def get_source_file_list(args):
 
     return file_list
 
-
+@timing
 def remove_symbols_tags(if_name, args):
     """Remove symbols and tags. Read input file, output to output file.
 
@@ -105,16 +134,12 @@ def remove_symbols_tags(if_name, args):
     of_name = '{args.out_dir}{prefix}_paragraph_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
 
-    start_sec = time.time()
     subprocess.call(['python3', 'rm_symbols_tags_empty_lines.py',
                      '-i={}'.format(if_name), '-o={}'.format(of_name)])
-    elapsed_sec = time.time() - start_sec
-    logging.info(
-        'It cost {} seconds to do remove_brackets_...'.format(elapsed_sec))
 
     return of_name
 
-
+@timing
 def paragraphs_to_sentences(if_name, args):
     """Generate sentences from paragraphs. Read input file, output to output file
 
@@ -130,19 +155,15 @@ def paragraphs_to_sentences(if_name, args):
     remove_file_if_exist(of_name)
     script_file = 'paragraphs_to_sentences_{}.py'.format(args.lang)
 
-    start_sec = time.time()
     subprocess.call(['python3', script_file,
                      '-i', if_name, '-o', of_name])
-    elapsed_sec = time.time() - start_sec
-    logging.info(
-        'It cost {} seconds to do paragraph_to_sentences'.format(elapsed_sec))
 
     if not args.keep_temp_files:
         remove_file_if_exist(if_name)
 
     return of_name
 
-
+@timing
 def sentences_to_terms(if_name, args):
     """generate terms from sentences
 
@@ -158,18 +179,15 @@ def sentences_to_terms(if_name, args):
     remove_file_if_exist(of_name)
     script_file = 'sentences_to_terms_{}.py'.format(args.lang)
 
-    start_sec = time.time()
     subprocess.call(['python', script_file,
                      if_name, '-o', of_name, '-m', 'w', '-s', 'n'])
-    elapsed_sec = time.time() - start_sec
-    logging.info('It cost {} seconds to separate terms'.format(elapsed_sec))
 
     if not args.keep_temp_files:
         remove_file_if_exist(if_name)
 
     return of_name
 
-
+@timing
 def terms_to_term_pairs(if_name, args):
     """Generate term pairs from terms.
 
@@ -184,10 +202,7 @@ def terms_to_term_pairs(if_name, args):
     remove_file_if_exist(of_name)
     script_file = 'terms_to_term_pair_freq.py'
 
-    start_sec = time.time()
     subprocess.call(['python3', script_file, '-i', if_name, '-o', of_name])
-    elapsed_sec = time.time() - start_sec
-    logging.info('It cost {} seconds to gen term pair freq'.format(elapsed_sec))
 
     if not args.keep_temp_files:
         remove_file_if_exist(if_name)
