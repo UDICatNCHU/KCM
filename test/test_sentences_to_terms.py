@@ -22,7 +22,7 @@ class TestSentencesToTerms(unittest.TestCase):
     @classmethod
     def common_init(cls, lang):
         cls.gen_input_file()
-        subprocess.call(['python', 'sentences_to_terms_{0}.py'.format(lang),
+        subprocess.call(['python', 'build/sentences_to_terms_{0}.py'.format(lang),
                          'input_file', '-o', 'output_file', '-m', 'w', '-s',
                          'n'])
         os.remove('input_file')

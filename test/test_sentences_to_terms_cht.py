@@ -3,7 +3,7 @@
 import unittest
 from collections import namedtuple
 
-from test_sentences_to_terms import TestSentencesToTerms
+from test.test_sentences_to_terms import TestSentencesToTerms
 
 
 # use tests modified from https://github.com/yanyiwu/cppjieba

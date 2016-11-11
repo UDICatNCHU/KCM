@@ -3,8 +3,8 @@
 import unittest
 from collections import namedtuple
 
-from terms_to_term_pair_freq import get_term_list
-from terms_to_term_pair_freq import yield_term_pairs_from_term_list
+from build.terms_to_term_pair_freq import get_term_list
+from build.terms_to_term_pair_freq import yield_term_pairs_from_term_list
 
 
 class TestTermsToTermPairs(unittest.TestCase):

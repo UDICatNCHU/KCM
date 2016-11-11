@@ -16,24 +16,6 @@ from pathlib import Path
 from threading import Thread
 from functools import wraps
 
-# def queryString_required(strList):
-# 	"""	An decorator checking whether queryString key is valid or not
-# 	Args:
-# 		str: allowed queryString key
-#
-# 	Returns:
-# 		if contains invalid queryString key, it will raise exception.
-# 	"""
-# 	def _dec(function):
-# 		@wraps(function)
-# 		def _wrap(request, *args, **kwargs):
-# 			for i in strList:
-# 				if i not in request.GET:
-# 					raise Http404("api does not exist")
-# 			return function(request, *args, **kwargs)
-# 		return _wrap
-# 	return _dec
-
 def timing(func):
     @wraps(func)
     def wrap(*args, **kw):
@@ -42,6 +24,15 @@ def timing(func):
         te = time.time()
         logging.info(
             'It cost {} seconds to do {}'.format(te-ts, func.__name__))
+        return result
+    return wrap
+
+def removeInputFile(func):
+    @wraps(func)
+    def wrap(*args, **kw):
+        result = func(*args, **kw)
+        if not args[1].keep_temp_files:
+            remove_file_if_exist(args[0])
         return result
     return wrap
 
@@ -136,9 +127,9 @@ def remove_symbols_tags(if_name, args):
 
     subprocess.call(['python3', 'rm_symbols_tags_empty_lines.py',
                      '-i={}'.format(if_name), '-o={}'.format(of_name)])
-
     return of_name
 
+@removeInputFile
 @timing
 def paragraphs_to_sentences(if_name, args):
     """Generate sentences from paragraphs. Read input file, output to output file
@@ -158,11 +149,9 @@ def paragraphs_to_sentences(if_name, args):
     subprocess.call(['python3', script_file,
                      '-i', if_name, '-o', of_name])
 
-    if not args.keep_temp_files:
-        remove_file_if_exist(if_name)
-
     return of_name
 
+@removeInputFile
 @timing
 def sentences_to_terms(if_name, args):
     """generate terms from sentences
@@ -182,11 +171,9 @@ def sentences_to_terms(if_name, args):
     subprocess.call(['python', script_file,
                      if_name, '-o', of_name, '-m', 'w', '-s', 'n'])
 
-    if not args.keep_temp_files:
-        remove_file_if_exist(if_name)
-
     return of_name
 
+@removeInputFile
 @timing
 def terms_to_term_pairs(if_name, args):
     """Generate term pairs from terms.
@@ -204,9 +191,6 @@ def terms_to_term_pairs(if_name, args):
 
     subprocess.call(['python3', script_file, '-i', if_name, '-o', of_name])
 
-    if not args.keep_temp_files:
-        remove_file_if_exist(if_name)
-
 
 # http://stackoverflow.com/questions/13613336/python-concatenate-text-files
 def join_terms_files(if_names, args):
@@ -222,9 +206,6 @@ def join_terms_files(if_names, args):
             with open(if_name, 'r') as input_file:
                 for line in input_file:
                     output_file.write(line)
-
-            if not args.keep_temp_files:
-                remove_file_if_exist(if_name)
 
     return of_name
 

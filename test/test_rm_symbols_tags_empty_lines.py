@@ -2,9 +2,9 @@
 
 import unittest
 
-from rm_symbols_tags_empty_lines import is_empty_line
-from rm_symbols_tags_empty_lines import has_tag
-from rm_symbols_tags_empty_lines import symbols_removed
+from build.rm_symbols_tags_empty_lines import is_empty_line
+from build.rm_symbols_tags_empty_lines import has_tag
+from build.rm_symbols_tags_empty_lines import symbols_removed
 
 
 class TestRmSymbolsTagsEmptyLines(unittest.TestCase):

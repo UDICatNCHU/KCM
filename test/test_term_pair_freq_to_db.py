@@ -2,8 +2,8 @@ import os
 import unittest
 
 import sqlite3
-from term_pair_freq_to_db import create_table
-from term_pair_freq_to_db import update_data_into_db
+from build.term_pair_freq_to_db import create_table
+from build.term_pair_freq_to_db import update_data_into_db
 
 
 class MyTestCase(unittest.TestCase):

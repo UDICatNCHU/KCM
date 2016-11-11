@@ -2,7 +2,7 @@
 
 import unittest
 
-from paragraphs_to_sentences_eng import paragraph_to_sentences
+from build.paragraphs_to_sentences_eng import paragraph_to_sentences
 
 
 class TestParagraphsToSentencesEng(unittest.TestCase):
