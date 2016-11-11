@@ -8,4 +8,4 @@ python:
 install:
   - make install
 script:
-  - make run
+  - make test
