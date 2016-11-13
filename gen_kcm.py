@@ -14,27 +14,7 @@ import argparse
 
 from pathlib import Path
 from threading import Thread
-from functools import wraps
-
-def timing(func):
-    @wraps(func)
-    def wrap(*args, **kw):
-        ts = time.time()
-        result = func(*args, **kw)
-        te = time.time()
-        logging.info(
-            'It cost {} seconds to do {}'.format(te-ts, func.__name__))
-        return result
-    return wrap
-
-def removeInputFile(func):
-    @wraps(func)
-    def wrap(*args, **kw):
-        result = func(*args, **kw)
-        if not args[1].keep_temp_files:
-            remove_file_if_exist(args[0])
-        return result
-    return wrap
+from djangoApiDec.djangoApiDec import timing, removeInputFile
 
 def remove_file_if_exist(file_name):
     """Remove file if it exist
@@ -125,7 +105,7 @@ def remove_symbols_tags(if_name, args):
     of_name = '{args.out_dir}{prefix}_paragraph_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
 
-    subprocess.call(['python3', 'rm_symbols_tags_empty_lines.py',
+    subprocess.call(['python3', 'build/rm_symbols_tags_empty_lines.py',
                      '-i={}'.format(if_name), '-o={}'.format(of_name)])
     return of_name
 
@@ -144,7 +124,7 @@ def paragraphs_to_sentences(if_name, args):
     prefix = if_name.split('/')[-1].split('_')[0]
     of_name = '{args.out_dir}{prefix}_sentences_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
-    script_file = 'paragraphs_to_sentences_{}.py'.format(args.lang)
+    script_file = 'build/paragraphs_to_sentences_{}.py'.format(args.lang)
 
     subprocess.call(['python3', script_file,
                      '-i', if_name, '-o', of_name])
@@ -166,7 +146,7 @@ def sentences_to_terms(if_name, args):
     prefix = if_name.split('/')[-1].split('_')[0]
     of_name = '{args.out_dir}{prefix}_terms_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
-    script_file = 'sentences_to_terms_{}.py'.format(args.lang)
+    script_file = 'build/sentences_to_terms_{}.py'.format(args.lang)
 
     subprocess.call(['python', script_file,
                      if_name, '-o', of_name, '-m', 'w', '-s', 'n'])
@@ -187,7 +167,7 @@ def terms_to_term_pairs(if_name, args):
     """
     of_name = '{args.out_dir}term_pair_freq_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
-    script_file = 'terms_to_term_pair_freq.py'
+    script_file = 'build/terms_to_term_pair_freq.py'
 
     subprocess.call(['python3', script_file, '-i', if_name, '-o', of_name])
 

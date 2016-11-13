@@ -1,4 +1,5 @@
+-e git+https://github.com/Stufinite/djangoApiDec.py.git@master#egg=djangoApiDec
 jieba==0.38
 nltk==3.2.1
 numpy==1.11.2
-pathlib
+pathlib==1.0.1

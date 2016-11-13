@@ -3,7 +3,10 @@
 import queue
 import argparse
 import subprocess
-
+from collections import OrderedDict
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from KCM import KCM
 
 def get_args():
     """Get args
@@ -84,13 +87,16 @@ def print_top_n_cor_terms(pq, n):
         pq: priority queue of tuple(frequency, correlated terms)
         n: number of terms to be printed
     """
+    jsonResult = OrderedDict()
     count = 0
     while not pq.empty() and count < n:
         count += 1
         (freq, cor_term) = pq.get()
         freq *= -1
         print('{cor_term} {freq}'.format(**locals()))
-
+        jsonResult[cor_term] = freq
+    return jsonResult
+    
 
 def get_term_pair_freq_pq(if_name, min_freq):
     """Return minimum priority queue of tuple(frequency, term pairs)
@@ -138,10 +144,11 @@ def print_top_n_term_pairs(pq, n):
 def main():
     """Main function"""
     args = get_args()
+    kcmObject = KCM()
     if args.base_term:  # print top n correlated terms
         pq = get_cor_term_freq_pq(args.input_file, args.base_term,
                                   args.min_freq)
-        print_top_n_cor_terms(pq, args.term_count)
+        kcmObject.start(args.base_term, print_top_n_cor_terms, pq, args.term_count)
     else:  # print top n term pairs
         pq = get_term_pair_freq_pq(args.input_file, args.min_freq)
         print_top_n_term_pairs(pq, args.term_count)
