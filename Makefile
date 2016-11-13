@@ -3,7 +3,7 @@ install:
 	sudo apt-get install -y opencc
 	pip install -r requirements.txt
 test:
-	python run_test.py
+	python run_tests.py
 build:
 	python gen_kcm.py -l=cht -i ChineseWikiRawData/ -o ChineseWikiRawData/ -m=0 -tc=4
 query:
