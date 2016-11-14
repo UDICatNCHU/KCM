@@ -102,7 +102,7 @@ def remove_symbols_tags(if_name, args):
         output file name
     """
     prefix = if_name.replace('/', '-').replace('_', '-')
-    of_name = '{args.out_dir}{prefix}_paragraph_{args.lang}'.format(**locals())
+    of_name = '{args.out_dir}/{prefix}_paragraph_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
 
     subprocess.call(['python3', 'build/rm_symbols_tags_empty_lines.py',
@@ -122,7 +122,7 @@ def paragraphs_to_sentences(if_name, args):
         output file name
     """
     prefix = if_name.split('/')[-1].split('_')[0]
-    of_name = '{args.out_dir}{prefix}_sentences_{args.lang}'.format(**locals())
+    of_name = '{args.out_dir}/{prefix}_sentences_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
     script_file = 'build/paragraphs_to_sentences_{}.py'.format(args.lang)
 
@@ -144,7 +144,7 @@ def sentences_to_terms(if_name, args):
         output file name
     """
     prefix = if_name.split('/')[-1].split('_')[0]
-    of_name = '{args.out_dir}{prefix}_terms_{args.lang}'.format(**locals())
+    of_name = '{args.out_dir}/{prefix}_terms_{args.lang}'.format(**locals())
     remove_file_if_exist(of_name)
     script_file = 'build/sentences_to_terms_{}.py'.format(args.lang)
 
@@ -165,7 +165,7 @@ def terms_to_term_pairs(if_name, args):
     Returns:
         output file name
     """
-    of_name = '{args.out_dir}term_pair_freq_{args.lang}'.format(**locals())
+    of_name = '{args.out_dir}/{args.lang}.model'.format(**locals())
     remove_file_if_exist(of_name)
     script_file = 'build/terms_to_term_pair_freq.py'
 
@@ -180,7 +180,7 @@ def join_terms_files(if_names, args):
         if_names: input terms files names
         args: input arguments
     """
-    of_name = '{args.out_dir}terms_{args.lang}'.format(**locals())
+    of_name = '{args.out_dir}/terms_{args.lang}'.format(**locals())
     with open(of_name, 'w') as output_file:
         for if_name in if_names:
             with open(if_name, 'r') as input_file:

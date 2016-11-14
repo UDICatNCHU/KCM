@@ -80,7 +80,7 @@ def get_cor_term_freq_pq(if_name, base_term, min_freq):
     return pq
 
 
-def print_top_n_cor_terms(pq, n):
+def return_top_n_cor_terms(pq, n):
     """Print top n correlated terms from priority queue
 
     Args:
@@ -126,7 +126,7 @@ def get_term_pair_freq_pq(if_name, min_freq):
     return pq
 
 
-def print_top_n_term_pairs(pq, n):
+def return_top_n_term_pairs(pq, n):
     """Print top n term pairs from priority queue
 
     Args:
@@ -148,10 +148,10 @@ def main():
     if args.base_term:  # print top n correlated terms
         pq = get_cor_term_freq_pq(args.input_file, args.base_term,
                                   args.min_freq)
-        kcmObject.start(args.base_term, print_top_n_cor_terms, pq, args.term_count)
+        kcmObject.getOrCreate(args.base_term, return_top_n_cor_terms, pq, args.term_count)
     else:  # print top n term pairs
         pq = get_term_pair_freq_pq(args.input_file, args.min_freq)
-        print_top_n_term_pairs(pq, args.term_count)
+        return_top_n_term_pairs(pq, args.term_count)
 
 
 if __name__ == '__main__':

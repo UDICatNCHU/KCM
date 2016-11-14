@@ -1,5 +1,7 @@
-import os, json
+import os, json, queue, subprocess
+from collections import OrderedDict
 from pathlib import Path
+from functools import wraps
 
 class KCM(object):
 	""" A KCM object having api for web to query
@@ -9,35 +11,124 @@ class KCM(object):
 	Returns:
 		ptt articles with specific keyword.
 	"""
-	def __init__(self):
-		self.dirPath = 'json'
+	def __init__(self, missionType = 'model'):
+		self.WikiModelDirPath = 'KCM/WikiRaw'
+		self.JsonDirPath = 'KCM/json'
+		self.missionType = missionType
+		self.DirPath = ''
+		self.fname_extension = ''
 
-	def getTermFilePath(self, keyword):
-		return '{}/{}/{}.json'.format(self.dirPath, keyword, keyword)
+	def setMissionType(self, missionType):
+		self.missionType = missionType
 
-	def getTermFolderPath(self, keyword):
-		return '{}/{}'.format(self.dirPath, keyword)
+	def setDirPath(func):
+		@wraps(func)
+		def wrap(self, *args, **kw):
+			self.DirPath = self.WikiModelDirPath if self.missionType == 'model' else self.JsonDirPath
+			self.fname_extension = 'model' if self.missionType == 'model' else 'json'
+			return func(self, *args, **kw)
+		return wrap
+
+	def get_cor_term_freq_pq(self, if_name, base_term, min_freq):
+		"""Return minimum priority queue of tuple(frequency, correlated terms)
+
+		2 tuple first compare the 1st item, which is the frequency
+
+		Args:
+			if_name: input file name
+			base_term: base term used to find correlated terms
+			min_freq: minimum frequency of correlated terms
+
+		Returns:
+			minimum priority queue of (freq, cor_term)
+		"""
+		pq = queue.PriorityQueue()
+
+		# Case1: base_term cor_term freq
+		try:
+			ret_byte = subprocess.check_output(
+				['grep', '^{base_term} '.format(**locals()), if_name])
+			for line in ret_byte.decode().split('\n')[:-1]:  # last is empty line
+				(_, cor_term, freq) = line.split(' ')
+				if int(freq) < min_freq:
+					continue
+
+				pq.put((-int(freq), cor_term))
+
+		except subprocess.CalledProcessError as e:  # grep found nothing
+			pass
+
+		# Case2: cor_term base_term freq
+		try:
+			ret_byte = subprocess.check_output(
+				['grep', ' {base_term} '.format(**locals()), if_name])
+			for line in ret_byte.decode().split('\n')[:-1]:  # last is empty line
+				(cor_term, _, freq) = line.split(' ')
+				if int(freq) < min_freq:
+					continue
+
+				pq.put((-int(freq), cor_term))
+
+		except subprocess.CalledProcessError as e:  # grep found nothing
+			pass
+
+		return pq
+
+
+	def return_top_n_cor_terms(self, pq, n):
+		"""Print top n correlated terms from priority queue
+
+		Args:
+			pq: priority queue of tuple(frequency, correlated terms)
+			n: number of terms to be printed
+		"""
+		jsonResult = OrderedDict()
+		count = 0
+		while not pq.empty() and count < n:
+			count += 1
+			(freq, cor_term) = pq.get()
+			freq *= -1
+			print('{cor_term} {freq}'.format(**locals()))
+			jsonResult[cor_term] = freq
+		return jsonResult
+
+	@setDirPath
+	def getFilePath(self, keyword):
+		return '{}/{}/{}.{}'.format(self.DirPath, keyword, keyword, self.fname_extension)
+
+	@setDirPath
+	def getFolderPath(self, keyword):
+		return '{}/{}'.format(self.DirPath, keyword)
 
 	def saveFile(self, keyword, data):
-		with open(self.getTermFilePath(keyword), 'w', encoding='utf8') as f:
-			json.dump(data, f)
+		if self.missionType == 'model':
+			pass
+		else:
+			with open(self.getFilePath(keyword), 'w', encoding='utf8') as f:
+				json.dump(data, f)
 
-	def loadFile(self, filePath):
-		with open(filePath, 'r', encoding='utf8') as f:
-			return json.load(f)
+	def loadFile(self, keyword):
+		if self.missionType == 'model':
+			return getFilePath(keyword)
+		else:
+			with open(self.getFilePath(keyword), 'r', encoding='utf8') as f:
+				return json.load(f)
 
 	def hasFile(self, keyword):
-		file = Path(self.getTermFilePath(keyword))
+		file = Path(self.getFilePath(keyword))
 		if file.is_file():
 			return True
 		else: return False
-	def start(self, keyword, func, *arg):
+
+	def getOrCreate(self, keyword, func, *arg):
 		if self.hasFile(keyword):
-			pass
-		elif os.path.exists(self.getTermFolderPath(keyword)):
+			data = self.loadFile(keyword)
+			print('here')
+		elif os.path.exists(self.getFolderPath(keyword)):
 			data = func(*arg)
 			self.saveFile(keyword, data)
 		else:
 			data = func(*arg)
-			os.makedirs(self.getTermFolderPath(keyword))
+			os.makedirs(self.getFolderPath(keyword))
 			self.saveFile(keyword, data)
+		return data
