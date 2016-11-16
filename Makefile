@@ -9,8 +9,6 @@ build:
 query:
 	python query/get_top_n_cor_terms_from_text.py -i=WikiRaw/$(lang)/$(lang).model -t=$(kw)
 init:
-	mkdir zhwiki_raw
-
 	# 下載原始的wiki raw data
 	cd zhwiki_raw; wget https://dumps.wikimedia.org/zhwiki/20160501/zhwiki-20160501-pages-articles1.xml.bz2
 

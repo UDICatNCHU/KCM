@@ -77,26 +77,7 @@ def get_cor_term_freq_pq(if_name, base_term, min_freq):
     except subprocess.CalledProcessError as e:  # grep found nothing
         pass
 
-    return pq
-
-
-def return_top_n_cor_terms(pq, n):
-    """Print top n correlated terms from priority queue
-
-    Args:
-        pq: priority queue of tuple(frequency, correlated terms)
-        n: number of terms to be printed
-    """
-    jsonResult = OrderedDict()
-    count = 0
-    while not pq.empty() and count < n:
-        count += 1
-        (freq, cor_term) = pq.get()
-        freq *= -1
-        print('{cor_term} {freq}'.format(**locals()))
-        jsonResult[cor_term] = freq
-    return jsonResult
-    
+    return pq    
 
 def get_term_pair_freq_pq(if_name, min_freq):
     """Return minimum priority queue of tuple(frequency, term pairs)
@@ -144,11 +125,11 @@ def return_top_n_term_pairs(pq, n):
 def main():
     """Main function"""
     args = get_args()
-    kcmObject = KCM()
+    kcmObject = KCM('json')
     if args.base_term:  # print top n correlated terms
         pq = get_cor_term_freq_pq(args.input_file, args.base_term,
                                   args.min_freq)
-        kcmObject.getOrCreate(args.base_term, return_top_n_cor_terms, pq, args.term_count)
+        kcmObject.getOrCreate(args.base_term, kcmObject.return_top_n_cor_terms, pq, args.term_count)
     else:  # print top n term pairs
         pq = get_term_pair_freq_pq(args.input_file, args.min_freq)
         return_top_n_term_pairs(pq, args.term_count)

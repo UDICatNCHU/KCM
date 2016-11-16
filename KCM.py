@@ -11,11 +11,12 @@ class KCM(object):
 	Returns:
 		ptt articles with specific keyword.
 	"""
-	def __init__(self, missionType = 'model'):
-		self.WikiModelDirPath = 'KCM/WikiRaw'
-		self.JsonDirPath = 'KCM/json'
-		self.missionType = missionType
+	def __init__(self, missionType = 'model', ParentDir = ''):
+		self.ParentDir = ParentDir
 		self.DirPath = ''
+		self.WikiModelDirPath = 'WikiRaw'
+		self.JsonDirPath = 'json'
+		self.missionType = missionType
 		self.fname_extension = ''
 
 	def setMissionType(self, missionType):
@@ -24,12 +25,12 @@ class KCM(object):
 	def setDirPath(func):
 		@wraps(func)
 		def wrap(self, *args, **kw):
-			self.DirPath = self.WikiModelDirPath if self.missionType == 'model' else self.JsonDirPath
+			self.DirPath = self.ParentDir + (self.WikiModelDirPath if self.missionType == 'model' else self.JsonDirPath)
 			self.fname_extension = 'model' if self.missionType == 'model' else 'json'
 			return func(self, *args, **kw)
 		return wrap
 
-	def get_cor_term_freq_pq(self, if_name, base_term, min_freq):
+	def get_cor_term_freq_pq(self, if_name, base_term, min_freq=1):
 		"""Return minimum priority queue of tuple(frequency, correlated terms)
 
 		2 tuple first compare the 1st item, which is the frequency
@@ -66,17 +67,15 @@ class KCM(object):
 				(cor_term, _, freq) = line.split(' ')
 				if int(freq) < min_freq:
 					continue
-
 				pq.put((-int(freq), cor_term))
 
 		except subprocess.CalledProcessError as e:  # grep found nothing
 			pass
-
 		return pq
 
 
-	def return_top_n_cor_terms(self, pq, n):
-		"""Print top n correlated terms from priority queue
+	def return_top_n_cor_terms(self, pq, n=10):
+		"""Generate top n correlated terms from priority queue
 
 		Args:
 			pq: priority queue of tuple(frequency, correlated terms)
@@ -88,7 +87,6 @@ class KCM(object):
 			count += 1
 			(freq, cor_term) = pq.get()
 			freq *= -1
-			print('{cor_term} {freq}'.format(**locals()))
 			jsonResult[cor_term] = freq
 		return jsonResult
 
@@ -112,7 +110,7 @@ class KCM(object):
 			return getFilePath(keyword)
 		else:
 			with open(self.getFilePath(keyword), 'r', encoding='utf8') as f:
-				return json.load(f)
+				return json.load(f, object_pairs_hook=OrderedDict)
 
 	def hasFile(self, keyword):
 		file = Path(self.getFilePath(keyword))
@@ -120,10 +118,15 @@ class KCM(object):
 			return True
 		else: return False
 
+	def DirectCall(self):
+		if self.ParentDir == '':
+			return True
+		else:
+			return False
+
 	def getOrCreate(self, keyword, func, *arg):
 		if self.hasFile(keyword):
 			data = self.loadFile(keyword)
-			print('here')
 		elif os.path.exists(self.getFolderPath(keyword)):
 			data = func(*arg)
 			self.saveFile(keyword, data)
@@ -131,4 +134,8 @@ class KCM(object):
 			data = func(*arg)
 			os.makedirs(self.getFolderPath(keyword))
 			self.saveFile(keyword, data)
+
+		if self.DirectCall():
+			for i in data.items():
+				print(i)
 		return data
