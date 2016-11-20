@@ -17,13 +17,14 @@ def get_args():
     args = parser.parse_args()
     return args
 def rename_extrac_files_and_expand_jiebaDict(args, folderPre):
-    """Generate list of term data source files
+    """Rename extracted wiki dir, etc AA, AB. And also get proper Noun from those Wiki text into dictionary to do Word Segmentation.
 
     Args:
-        args: input arguments, use args.lang, args.max_file_count
+        args: input arguments, use args.input_dir.
+        folderPre: Prefix of folder.
 
     Returns:
-        list of source files
+        None.
     """
 
     file_list = []  # wiki files

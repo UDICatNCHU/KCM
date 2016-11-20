@@ -1,4 +1,4 @@
-.PHONY: install init query test build
+.PHONY: install init query test build getWiki
 install:
 	sudo apt-get install -y opencc
 	pip install -r requirements.txt
@@ -8,7 +8,8 @@ build:
 	python gen_kcm.py -l=$(lang) -i WikiRaw/$(lang) -o WikiRaw/$(lang) -m=0 -tc=4
 query:
 	python query/get_top_n_cor_terms_from_text.py -i=WikiRaw/$(lang)/$(lang).model -t=$(kw)
-init:
+
+getWiki:
 	mkdir -p WikiRaw/cht;
 	mkdir -p WikiRaw/bz2;
 	# 下載原始的wiki raw data
@@ -19,3 +20,6 @@ init:
 
 	# append extended jieba dictionary to original dict
 	# cat jieba_expandDict.txt >> dict.txt
+
+# initialize the whole process, it will get wikidata and build model.
+init: getWiki build
