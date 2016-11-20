@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os, argparse, subprocess
 def get_args():
     """Return args"""
