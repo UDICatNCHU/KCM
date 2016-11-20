@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, argparse, subprocess
+import os, argparse, subprocess, re
 def get_args():
     """Return args"""
 
@@ -49,7 +49,7 @@ def main():
     """Main function"""
     args = get_args()
     subprocess.call(['python2', 'preprocess_lib/WikiExtractor.py', args.wikiFile, '-o', args.output_dir])
-    folderPre = args.wikiFile.split('.')[0]
+    folderPre = re.search(r'articles(.)+',args.wikiFile.split('.')[0])
     rename_extrac_files_and_expand_jiebaDict(args, folderPre)
 
 if __name__ == '__main__':
