@@ -5,7 +5,7 @@ install:
 test:
 	python run_tests.py
 build:
-	python gen_kcm.py -l=cht -i WikiRaw/cht -o WikiRaw/ -m=0 -tc=4
+	python gen_kcm.py -l=cht -i WikiRaw/cht -o WikiRaw/cht -m=0 -tc=4
 query:
 	python query/get_top_n_cor_terms_from_text.py -i=WikiRaw/$(lang)/$(lang).model -t=$(kw)
 

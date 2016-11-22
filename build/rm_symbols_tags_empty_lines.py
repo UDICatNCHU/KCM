@@ -60,6 +60,9 @@ def get_args():
 def main():
     """Main function"""
     if_name, of_name = get_args()
+    print('-----------------------')
+    print(if_name)
+    print('-----------------------')
     with open(if_name, 'r', encoding='utf-8') as input_file:
         with open(of_name, 'a', encoding='utf-8') as output_file:
             for line in input_file:
