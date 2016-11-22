@@ -22,7 +22,7 @@ getWiki:
 	# cat jieba_expandDict.txt >> dict.txt
 
 # initialize the whole process, it will get wikidata and build model.
-init: getWiki build
+init: start getWiki build end
 start:
 	echo $@: `date +%s` > time.log
 end:
