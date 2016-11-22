@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Input file of paragraphs, output file of sentences (Chinese)"""
 
 import argparse

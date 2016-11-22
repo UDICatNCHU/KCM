@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Input text file of sentences, output text file of terms (Chinese)
 
 Output format: '/詞1/詞2/詞2\n...'

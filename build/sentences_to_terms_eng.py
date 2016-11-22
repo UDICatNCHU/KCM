@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Input text file of sentences, output text file of terms (English)
 
 Output format: '/term1/term2/term3\n...'

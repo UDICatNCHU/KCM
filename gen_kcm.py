@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """KCM generating script
 
 This script is used to generate KCM/TCM (Term correlated model).

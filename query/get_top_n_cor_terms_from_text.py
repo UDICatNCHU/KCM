@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Print out top N correlated terms from text file"""
 
 import queue

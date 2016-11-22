@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Print out top n correlated terms from database"""
 
 import argparse

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Input text file of terms, output text file of term pair and frequency"""
 
 import argparse

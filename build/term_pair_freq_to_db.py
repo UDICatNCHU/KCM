@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Input term pair frequency text file, output sqlite database file
 
 If the db file specified by -o does not exist, simply create a db file,

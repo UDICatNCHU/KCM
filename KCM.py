@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os, json, queue, subprocess
 from collections import OrderedDict
 from pathlib import Path
