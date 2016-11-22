@@ -60,8 +60,8 @@ def get_args():
 def main():
     """Main function"""
     if_name, of_name = get_args()
-    with open(if_name, 'r') as input_file:
-        with open(of_name, 'a') as output_file:
+    with open(if_name, 'r', encoding='utf8') as input_file:
+        with open(of_name, 'a', encoding='utf8') as output_file:
             for line in input_file:
                 if is_empty_line(line):
                     continue
