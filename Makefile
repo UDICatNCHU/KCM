@@ -23,3 +23,8 @@ getWiki:
 
 # initialize the whole process, it will get wikidata and build model.
 init: getWiki build
+start:
+	echo $@: `date +%s` > time.log
+end:
+	echo $@: `date +%s` >> time.log
+
