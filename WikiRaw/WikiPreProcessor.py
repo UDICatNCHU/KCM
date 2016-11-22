@@ -47,11 +47,11 @@ def rename_extrac_files_and_expand_jiebaDict(args, folderPre):
 	return file_list
 
 def main():
-	"""Main function"""
-	args = get_args()
-	subprocess.call(['python2', 'preprocess_lib/WikiExtractor.py', args.wikiFile, '-o', args.output_dir])
-	folderPre = re.search(r'articles(.)+',args.wikiFile.split('.')[0])
-	rename_extrac_files_and_expand_jiebaDict(args, folderPre.group(1))
+    """Main function"""
+    args = get_args()
+    subprocess.call(['python2', 'preprocess_lib/WikiExtractor.py', args.wikiFile, '-o', args.output_dir])
+    folderPre = re.search(r'articles(.)+',args.wikiFile.split('.')[0])
+    rename_extrac_files_and_expand_jiebaDict(args, str(folderPre.group(0)))
 
 if __name__ == '__main__':
-	main()
+    main()
