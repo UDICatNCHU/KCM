@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Input text file, remove symbols, tags and empty lines, output to file"""
 
 import re
