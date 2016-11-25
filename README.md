@@ -21,7 +21,7 @@ These instructions will get you a copy of the project up and running on your loc
 2. 使用虛擬環境：
   1. `virtualenv venv`
   2. `. venv/bin/activate`
-3. make install
+3. sudo make install
 ```
 
 
