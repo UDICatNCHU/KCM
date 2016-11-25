@@ -17,8 +17,11 @@ These instructions will get you a copy of the project up and running on your loc
 ### Installing
 
 ```
-git clone https://david30907d@bitbucket.org/udiclab/term_classification.git
-make install
+1. git clone https://david30907d@bitbucket.org/udiclab/term_classification.git
+2. 使用虛擬環境：
+  1. `virtualenv venv`
+  2. `. venv/bin/activate`
+3. make install
 ```
 
 
@@ -26,26 +29,29 @@ make install
 
 ## Run
 
-* `make run` ( This command must be executed in the directory which has `Makefile` )
-* Generate sqlite db file from term_pair-freq text file：`python3 term_pair_freq_to_db.py -i=TERM_PAIR_FREQ_FILE -o=DB_FILE`
+* 整體使用方法：
+  * 建立KCM模型： `make init lang=cht` ( This command must be executed in the directory which has `Makefile` )，lang是語言的參數，後面的cht可以換成其他語言的代號（目前上無其他語言可選）。
 
-* Get top n correlated terms from kcm database：`python3 get_top_n_cor_terms_from_db.py -i=KCM_DB -t=BASE_TERM -N=HOW_MANY_COR_TERMS`
+  * 查詢KCM模型：`make query lang={語言} kw={關鍵字}`
+* 個別執行方法：
+  * Generate Chinese KCM from all wiki files with 4 threads：`python3 build/gen_kcm.py -l=cht -i [path] -o [path] -m=0 -tc=4`
+
+  * Generate sqlite db file from term_pair-freq text file：`python3 build/term_pair_freq_to_db.py -i=TERM_PAIR_FREQ_FILE -o=DB_FILE`
+
+  * Get top n correlated terms from kcm database：`python3 build/get_top_n_cor_terms_from_db.py -i=KCM_DB -t=BASE_TERM -N=HOW_MANY_COR_TERMS`
 
 
-* Get top 10 correlated terms from kcm text：`python3 get_top_n_cor_terms_from_text.py -i=KCM_TEXT -t=BASE_TERM`
+  * Get top 10 correlated terms from kcm text：`python3 build/get_top_n_cor_terms_from_text.py -i=KCM_TEXT -t=BASE_TERM`
+
+  * Get top 10 correlated term pairs from text：`python3 build/get_top_n_cor_terms_from_text.py -i=KCM_MODEL`
 
 
 
-* Get top 10 correlated term pairs from text：`python3 get_top_n_cor_terms_from_text.py -i=KCM_MODEL`
-
-* Generate Chinese KCM from all wiki files with 4 threads：`python3 gen_kcm.py -l=cht -i [path] -o [path] -m=0 -tc=4`
 
 ### Break down into end to end tests
 
 
 1. 執行全部的測試：`python3 run_tests.py`
-2. 分別測試：
-  * 測試rm_symbol的功能：`python3 -m unittest test_rm_symbols_tags_empty_lines.py`
 
 ### And coding style tests
 
@@ -53,27 +59,24 @@ make install
 
 ### Results
 
+執行美國隊長的查詢：`make query lang=cht kw=美國隊長`
 ```
-氟 锶 3
-人 秦 5
-酸 锅 4
-州 路 8
-单 双 4
-氟 铅 3
-市 省 3
-耙 酸 4
-原 时 3
-鱼 鸭 5
-汤 菜 8
-眼 科 3
+('復仇者', 113)
+('和', 105)
+('他', 66)
+('中', 60)
+('電影', 59)
+('後', 56)
+('漫畫', 54)
+('他們', 49)
+('英雄', 48)
+('人', 46)
+
 ```
 
 ## Deployment
 
-
 目前只是一般的python程式，git clone佈署即可
-
-以後會提供django版本，屆時再新增django的deploy 方法
 
 ## Built With
 

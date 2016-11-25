@@ -18,8 +18,8 @@ getWiki:
 	# # Extract 維基的XML
 	cd WikiRaw;python2 WikiPreProcessor.py -i cht -wiki bz2/zhwiki-20160501-pages-articles1.xml.bz2 -o cht ;python2 WikiPreProcessor.py -i cht -wiki bz2/zhwiki-20160501-pages-articles2.xml.bz2 -o cht ;python2 WikiPreProcessor.py -i cht -wiki bz2/zhwiki-20160501-pages-articles3.xml.bz2 -o cht ;python2 WikiPreProcessor.py -i cht -wiki bz2/zhwiki-20160501-pages-articles4.xml.bz2 -o cht
 
-	# append extended jieba dictionary to original dict
-	# cat jieba_expandDict.txt >> dict.txt
+	# mv extended jieba dictionary to dictionary directory
+	mv WikiRaw/cht/jieba_expandDict_trad.txt dictionary/
 
 # initialize the whole process, it will get wikidata and build model.
 init: start getWiki build end
