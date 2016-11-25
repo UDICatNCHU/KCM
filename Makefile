@@ -1,7 +1,7 @@
 .PHONY: install init query test build getWiki
 install:
 	sudo apt-get install -y opencc
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 test:
 	python run_tests.py
 build:
