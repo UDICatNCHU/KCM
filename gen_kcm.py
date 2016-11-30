@@ -149,7 +149,7 @@ def sentences_to_terms(if_name, args):
     remove_file_if_exist(of_name)
     script_file = 'build/sentences_to_terms_{}.py'.format(args.lang)
 
-    subprocess.call(['python', script_file,
+    subprocess.call(['python3', script_file,
                      if_name, '-o', of_name, '-m', 'w', '-s', 'n'])
 
     return of_name
