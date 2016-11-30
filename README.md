@@ -16,24 +16,23 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
-```
-1. git clone https://david30907d@bitbucket.org/udiclab/term_classification.git
-2. 使用虛擬環境：
+1. 下載 Download this project：`git clone https://github.com/UDICatNCHU/KCM.git`
+2. 使用虛擬環境 Use virtualenv is recommended：
   1. `virtualenv venv`
-  2. `. venv/bin/activate`
-3. sudo make install
-```
-
+  2. 啟動方法 How to activate virtualenv
+    1. for Linux：`. venv/bin/activate`
+    2. for Windows：`venv\Scripts\activate`
+3. 安裝 Install：`make install`
 
 ## Running & Testing
 
 ## Run
 
-* 整體使用方法：
-  * 建立KCM模型： `make init lang=cht` ( This command must be executed in the directory which has `Makefile` )，lang是語言的參數，後面的cht可以換成其他語言的代號（目前上無其他語言可選）。
+* 整體使用方法 Usage：
+  * 建立KCM模型 First, Build KCM model： `make init lang=cht` ( This command must be executed in the directory which has `Makefile` )，lang是語言的參數，後面的cht可以換成其他語言的代號 cht is kind of language parameter, we can change "cht" into another language abbreviation.（目前上無其他語言可選）。
 
-  * 查詢KCM模型：`make query lang={語言} kw={關鍵字}`
-* 個別執行方法：
+  * 查詢KCM模型 query KCM model with keyword：`make query lang={語言} kw={關鍵字}`
+* 個別執行方法 execute each python file：
   * Generate Chinese KCM from all wiki files with 4 threads：`python3 build/gen_kcm.py -l=cht -i [path] -o [path] -m=0 -tc=4`
 
   * Generate sqlite db file from term_pair-freq text file：`python3 build/term_pair_freq_to_db.py -i=TERM_PAIR_FREQ_FILE -o=DB_FILE`
@@ -45,44 +44,62 @@ These instructions will get you a copy of the project up and running on your loc
 
   * Get top 10 correlated term pairs from text：`python3 build/get_top_n_cor_terms_from_text.py -i=KCM_MODEL`
 
+  ### Results
+
+  執行美國隊長的查詢 the result of querying KCM model with keyword "Captain America"：`make query lang=cht kw=美國隊長`
+  ```
+  ('復仇者', 113)
+  ('和', 105)
+  ('他', 66)
+  ('中', 60)
+  ('電影', 59)
+  ('後', 56)
+  ('漫畫', 54)
+  ('他們', 49)
+  ('英雄', 48)
+  ('人', 46)
+
+  ```
 
 
 
 ### Break down into end to end tests
 
 
-1. 執行全部的測試：`python3 run_tests.py`
+1. 執行全部的測試 run whole test：`python3 run_tests.py`
 
 ### And coding style tests
 
 目前沒有coding style tests...
 
-### Results
+### Architecture
 
-執行美國隊長的查詢：`make query lang=cht kw=美國隊長`
-```
-('復仇者', 113)
-('和', 105)
-('他', 66)
-('中', 60)
-('電影', 59)
-('後', 56)
-('漫畫', 54)
-('他們', 49)
-('英雄', 48)
-('人', 46)
-
-```
+* File：
+  * gen_kcm.py：generate kcm model。
+  * KCM.py：`KCM Class` file。
+  * run_tests.py：run all the test。
+  * .travis.yml：config of Travis-CI
+* Directory：
+  * build：裏面事件立KCM model的程式。The programs of building KCM。
+  * dictionary：dictionary used by jieba。
+  * json：result will be cached with json format and be dumped in this directory。
+  * query：python programs that query KCM model with keyword, and pass it into screen or with WEB。
+  * test：unit test python programs。
+  * WikiRaw：
+    * bz2：Raw Data downloaded from Wiki, having filename extension `bz2`. e.q. `zhwiki-20160501-pages-articles1.xml.bz2`
+    * cht：directory extracted from bz2 Raw Data。e.q. `AA`、`AB` ...
+    * preprocess_lib：
+      * detectPN.py：Get more proper noun from title and text of Wiki, and append it into `jieba_expandDict` dict。
+      * WikiExtractor.py：Extract articles from Raw Wiki Data
+    * WikiPreProcessor.py：Start all the pre-processing program, including detectPN and WikiExtractor
 
 ## Deployment
 
-目前只是一般的python程式，git clone佈署即可
+目前只是一般的python程式，git clone佈署即可  
+Just a normal python program, git clone it.
 
 ## Built With
 
-* python3.2
-* python3.3
-* python3.4
 * python3.5
 
 ## Versioning
@@ -99,9 +116,10 @@ For the versions available, see the [tags on this repository](https://github.com
 
 ## License
 
-目前還不清楚能不能open source，所以暫不添加License
+目前還不清楚能不能open source，所以暫不添加License  
+Having no idea whether it can be OPEN SOURCE, so no license right now.
 
 ## Acknowledgments
 
-* 感謝fxsjy的jieba斷詞系統
-* 感謝Google工程師釋出的word2vec
+* 感謝fxsjy的jieba斷詞系統 Thanks python library jieba from fxsjy
+* 感謝Google工程師釋出的word2vec Thanks word2vec from Google
