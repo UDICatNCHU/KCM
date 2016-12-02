@@ -57,7 +57,7 @@ class PreProcess(object):
 		return file_list
 
 	def language(self, dir_path, file_name, langDir):
-		if self.lang = 'cht':
+		if self.lang == 'cht':
 			subprocess.call(['python2', 'preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_s.txt'])
 			subprocess.call(['opencc', '-i', dir_path + '/' + file_name, '-o', dir_path + '/' + file_name + '_tradCHT'])
 			subprocess.call(['python2', 'preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_trad.txt'])
