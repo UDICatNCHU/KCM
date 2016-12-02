@@ -19,7 +19,11 @@ def get_args():
 
 class PreProcess(object):
 	"""docstring for ClassName"""
+		
 	def __init__(self, arg):
+		def getFolderPre():
+			folderPre = re.search(r'articles(.)+',self.wikiFile.split('.')[0])
+			return str(folderPre.group(0))
 		self.arg = arg
 		self.wikiFile = arg.wikiFile
 		self.output_dir = arg.output_dir
@@ -27,9 +31,6 @@ class PreProcess(object):
 		self.folderPre = getFolderPre()
 		subprocess.call(['python2', 'preprocess_lib/WikiExtractor.py', self.wikiFile, '-o', self.output_dir])
 
-	def getFolderPre(self):
-		folderPre = re.search(r'articles(.)+',self.wikiFile.split('.')[0])
-		return str(folderPre.group(0))
 		
 	def rename_extrac_files_and_expand_jiebaDict(self):
 		"""Rename extracted wiki dir, etc AA, AB. And also get proper Noun from those Wiki text into dictionary to do Word Segmentation.
@@ -43,7 +44,7 @@ class PreProcess(object):
 			if dir_names == []:
 				langDir = dir_path.split('/')[0]
 				for file_name in file_names:
-					self.language()
+					self.language(dir_path, file_name, langDir)
 
 			for dirName in dir_names:
 				# wikiextract出來之後，結果會是AA、AB等等的資料夾名稱

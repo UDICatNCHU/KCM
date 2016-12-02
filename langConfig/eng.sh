@@ -3,7 +3,7 @@ mkdir -p WikiRaw/eng;
 cd WikiRaw/bz2; wget https://dumps.wikimedia.org/enwiki/20161120/enwiki-20161120-pages-articles1.xml-p000000010p000030302.bz2;
 
 # Extract 維基的XML
-cd ../;python2 WikiPreProcessor.py -wiki bz2/enwiki-20161120-pages-articles1.xml-p000000010p000030302.bz2 -o eng
+cd ../;python2 WikiPreProcessor.py -wiki bz2/enwiki-20161120-pages-articles1.xml-p000000010p000030302.bz2 -o eng -l=eng
 
 # mv extended jieba dictionary to dictionary directory
 # mv WikiRaw/cht/jieba_expandDict_trad.txt dictionary/
