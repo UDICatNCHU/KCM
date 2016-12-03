@@ -6,4 +6,4 @@ cd WikiRaw/bz2; wget https://dumps.wikimedia.org/enwiki/20161201/enwiki-20161201
 cd ../;python2 WikiPreProcessor.py -wiki bz2/enwiki-20161201-pages-articles.xml.bz2 -o eng -l=eng
 
 # mv extended jieba dictionary to dictionary directory
-# mv WikiRaw/cht/jieba_expandDict_trad.txt dictionary/
+mv WikiRaw/eng/jieba_expandDict_eng.txt dictionary/
