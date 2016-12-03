@@ -2,6 +2,7 @@
 install:
 	sudo apt-get install -y opencc
 	pip3 install -r requirements.txt
+	python3 install/InstallNltk.py
 test:
 	python3 run_tests.py
 build:
