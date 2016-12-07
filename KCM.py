@@ -12,13 +12,14 @@ class KCM(object):
 	Returns:
 		ptt articles with specific keyword.
 	"""
-	def __init__(self, missionType = 'model', ParentDir = ''):
+	def __init__(self, num, missionType = 'model', ParentDir = ''):
 		self.ParentDir = ParentDir
 		self.DirPath = ''
 		self.WikiModelDirPath = 'WikiRaw'
 		self.JsonDirPath = 'json'
 		self.missionType = missionType
 		self.fname_extension = ''
+		self.queryNum = num
 
 	def setMissionType(self, missionType):
 		self.missionType = missionType
@@ -75,7 +76,7 @@ class KCM(object):
 		return pq
 
 
-	def return_top_n_cor_terms(self, pq, n=10):
+	def return_top_n_cor_terms(self, pq):
 		"""Generate top n correlated terms from priority queue
 
 		Args:
@@ -84,7 +85,7 @@ class KCM(object):
 		"""
 		jsonResult = OrderedDict()
 		count = 0
-		while not pq.empty() and count < n:
+		while not pq.empty() and count < self.queryNum:
 			count += 1
 			(freq, cor_term) = pq.get()
 			freq *= -1
@@ -99,12 +100,6 @@ class KCM(object):
 	def getFolderPath(self, keyword):
 		return '{}/{}'.format(self.DirPath, keyword)
 
-	def saveFile(self, keyword, data):
-		if self.missionType == 'model':
-			pass
-		else:
-			with open(self.getFilePath(keyword), 'w', encoding='utf8') as f:
-				json.dump(data, f)
 
 	def loadFile(self, keyword):
 		if self.missionType == 'model':
@@ -126,15 +121,22 @@ class KCM(object):
 			return False
 
 	def getOrCreate(self, keyword, func, *arg):
-		if self.hasFile(keyword):
-			data = self.loadFile(keyword)
-		elif os.path.exists(self.getFolderPath(keyword)):
+		def saveFile(keyword, data):
+			if self.missionType == 'model':
+				pass
+			else:
+				with open(self.getFilePath(keyword + str(self.queryNum)), 'w', encoding='utf8') as f:
+					json.dump(data, f)
+
+		if self.hasFile(keyword + str(self.queryNum)):
+			data = self.loadFile(keyword + str(self.queryNum))
+		elif os.path.exists(self.getFolderPath(keyword + str(self.queryNum))):
 			data = func(*arg)
-			self.saveFile(keyword, data)
+			saveFile(keyword, data)
 		else:
 			data = func(*arg)
-			os.makedirs(self.getFolderPath(keyword))
-			self.saveFile(keyword, data)
+			os.makedirs(self.getFolderPath(keyword + str(self.queryNum)))
+			saveFile(keyword, data)
 
 		if self.DirectCall():
 			for i in data.items():
