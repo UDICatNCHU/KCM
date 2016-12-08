@@ -4,6 +4,15 @@ This repository contains python scripts to generate KCM(Keyword Correlating Mode
 
 The python scripts tries to follow the coding convention from [google python style guide](https://google.github.io/styleguide/pyguide.html).
 
+目前支援：
+* 中文版
+* 英文版
+* 泰文版
+KCM API of web version, you can call the url directly and will cache the result in server.  
+Now three languages are available:
+* Chinese
+* English
+* Thai
 
 ## Getting Started
 
@@ -29,7 +38,7 @@ These instructions will get you a copy of the project up and running on your loc
 ## Run
 
 * 整體使用方法 Usage：
-  * 建立KCM模型 First, Build KCM model： `make init lang=cht` ( This command must be executed in the directory which has `Makefile` )，lang是語言的參數，後面的cht可以換成其他語言的代號 cht is kind of language parameter, we can change "cht" into another language abbreviation.（目前上無其他語言可選）。
+  * 建立KCM模型 First, Build KCM model： `make init lang={cht、eng、thai}` ( This command must be executed in the directory which has `Makefile` )，lang是語言的參數，後面的cht可以換成其他語言的代號 cht is kind of language parameter, we can change "cht" into another language abbreviation.（目前上無其他語言可選）。
 
   * 查詢KCM模型 query KCM model with keyword：`make query lang={語言} kw={關鍵字}`
 * 個別執行方法 execute each python file：
@@ -80,6 +89,8 @@ These instructions will get you a copy of the project up and running on your loc
   * run_tests.py：run all the test。
   * .travis.yml：config of Travis-CI
 * Directory：
+  * langConfig：不同語言需要去抓不同的wiki資料然後分解、抓專有名詞來擴充字典，所以寫成不同的shell script (Each language writing in separated shellScript because having their own Wiki URL to get data.)
+  * install：英文斷詞需要安裝ＮＬＴＫ文本，裏面的install.py就下載文本 (NLTK need to download corpus to do word segmentation, the install.py is used to download those corpus).
   * build：裏面事件立KCM model的程式。The programs of building KCM。
   * dictionary：dictionary used by jieba。
   * json：result will be cached with json format and be dumped in this directory。
