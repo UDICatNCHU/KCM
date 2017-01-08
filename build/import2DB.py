@@ -12,18 +12,23 @@ class import2Mongo(object):
 		
 
 	def Build(self):
+		self.Collect.remove({})
+		result = dict()
 		for i in self.file:
 			tmp = i.split()
-			self.Collect.update({"key":tmp[0]}, {"$push":{"value":tmp[1:]}}, True)
-			self.Collect.update({"key":tmp[1]}, {"$push":{"value":tmp[0::2]}}, True)
+			result.setdefault(tmp[0], []).append(tmp[1:])
+			result.setdefault(tmp[1], []).append(tmp[0::2])
+
+		for index, value in result.items():
+			self.Collect.update({index:{"$exists":True}}, {index:value}, True)
 
 	def get(self, keyword, amount):
-		result = self.Collect.find({"key":keyword}, {"value":1}).limit(1)
+		result = self.Collect.find({keyword:{"$exists":True}}).limit(1)
 		if result.count() == 0:
 			return []
-		return sorted(list(result)[0]['value'], key=lambda x:-int(x[1]))[:amount]
+		return sorted(dict(list(result)[0])[keyword], key=lambda x:-int(x[1]))[:amount]
 
 i = import2Mongo("cht")
 i.Build()
 result = i.get('臺灣', 10)
-print(result)
+print(result)	
