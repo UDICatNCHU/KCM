@@ -3,3 +3,4 @@ jieba==0.38
 nltk==3.2.1
 numpy==1.11.2
 pathlib==1.0.1
+pyprind==2.9.9

@@ -12,9 +12,11 @@ class import2Mongo(object):
 		
 
 	def Build(self):
+		import pyprind
+		
 		self.Collect.remove({})
 		result = dict()
-		for i in self.file:
+		for i in pyprind.prog_percent(self.file):
 			tmp = i.split()
 			result.setdefault(tmp[0], []).append(tmp[1:])
 			result.setdefault(tmp[1], []).append(tmp[0::2])
