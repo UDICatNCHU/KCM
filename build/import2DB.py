@@ -13,15 +13,15 @@ class import2Mongo(object):
 
 	def Build(self):
 		import pyprind
-		
+
 		self.Collect.remove({})
 		result = dict()
-		for i in pyprind.prog_percent(self.file):
+		for i in pyprind.prog_percent(self.file.readlines()):
 			tmp = i.split()
 			result.setdefault(tmp[0], []).append(tmp[1:])
 			result.setdefault(tmp[1], []).append(tmp[0::2])
 
-		for index, value in result.items():
+		for index, value in pyprind.prog_percent(result.items()):
 			self.Collect.update({index:{"$exists":True}}, {index:value}, True)
 
 	def get(self, keyword, amount):
