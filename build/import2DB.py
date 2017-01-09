@@ -21,14 +21,15 @@ class import2Mongo(object):
 			result.setdefault(tmp[0], []).append(tmp[1:])
 			result.setdefault(tmp[1], []).append(tmp[0::2])
 
-		for index, value in pyprind.prog_percent(result.items()):
-			self.Collect.update({index:{"$exists":True}}, {index:value}, True)
+		documentArr = tuple( dict(key=index, value=value) for index, value in pyprind.prog_percent(result.items()) )
+
+		self.Collect.insert(documentArr)
 
 	def get(self, keyword, amount):
-		result = self.Collect.find({keyword:{"$exists":True}}).limit(1)
+		result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
 		if result.count() == 0:
 			return []
-		return sorted(dict(list(result)[0])[keyword], key=lambda x:-int(x[1]))[:amount]
+		return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
 
 i = import2Mongo("cht")
 i.Build()
