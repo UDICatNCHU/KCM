@@ -14,16 +14,17 @@ class import2Mongo(object):
 	def Build(self):
 		import pyprind
 
-		self.file = open("../WikiRaw/{0}/{0}.model".format(self.lang), 'r', encoding='utf8')
 		self.Collect.remove({})
-
 		result = dict()
-		for i in pyprind.prog_percent(self.file.readlines()):
-			tmp = i.split()
-			result.setdefault(tmp[0], []).append(tmp[1:])
-			result.setdefault(tmp[1], []).append(tmp[0::2])
 
-		documentArr = tuple( dict(key=index, value=value) for index, value in pyprind.prog_percent(result.items()) )
+		with open("../WikiRaw/{0}/{0}.model".format(self.lang), 'r', encoding='utf8') as f:
+			for i in f:
+				tmp = i.split()
+				result.setdefault(tmp[0], []).append(tmp[1:])
+				result.setdefault(tmp[1], []).append(tmp[0::2])
+
+		documentArr = tuple( dict(key=index, value=value) for index, value in pyprind.prog_percent(result.items()))
+		del result
 
 		self.Collect.insert(documentArr)
 
