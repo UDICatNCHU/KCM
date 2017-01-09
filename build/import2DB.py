@@ -20,8 +20,8 @@ class import2Mongo(object):
 		with open("../WikiRaw/{0}/{0}.model".format(self.lang), 'r', encoding='utf8') as f:
 			for i in f:
 				tmp = i.split()
-				result.setdefault(tmp[0], []).append(tmp[1:])
-				result.setdefault(tmp[1], []).append(tmp[0::2])
+				result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
+				result.setdefault(tmp[1], []).append([tmp[0], int(tmp[2])])
 
 		documentArr = tuple( dict(key=index, value=value) for index, value in pyprind.prog_percent(result.items()))
 		del result
@@ -34,8 +34,25 @@ class import2Mongo(object):
 			return []
 		return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
 
+	def delDuplicate(self):
+		keywordSet = set(i['key'] for i in self.Collect.find())
+		for key in keywordSet:
+			value = []
+			for dupkey in self.Collect.find({"key":key}):
+				value += dupkey['value']
+				self.Collect.remove({'_id':dupkey['_id']})
+
+			tmpDict = dict()
+			for tup in value:
+				tmpDict.setdefault(tup[0], 0)+int(tup[1])
+			valueArr = [[dictKey, dictValue]for dictKey, dictValue in tmpDict.items()]
+
+			self.Collect.insert({'key':key, 'value':valueArr})
+
+
 if __name__ == "__main__":
 	i = import2Mongo("cht")
 	i.Build()
 	result = i.get('臺灣', 10)
 	print(result)	
+	i.delDuplicate()
