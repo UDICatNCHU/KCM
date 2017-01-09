@@ -5,7 +5,7 @@ from pymongo import MongoClient
 class import2Mongo(object):
 	"""docstring for import2Mongo"""
 	def __init__(self, lang, uri=None):
-		self.file = open("../WikiRaw/{0}/{0}.model".format(lang), 'r', encoding='utf8')
+		self.lang = lang
 		self.client = MongoClient(uri)
 		self.db = self.client['nlp']
 		self.Collect = self.db['kcm']
@@ -14,7 +14,9 @@ class import2Mongo(object):
 	def Build(self):
 		import pyprind
 
+		self.file = open("../WikiRaw/{0}/{0}.model".format(self.lang), 'r', encoding='utf8')
 		self.Collect.remove({})
+
 		result = dict()
 		for i in pyprind.prog_percent(self.file.readlines()):
 			tmp = i.split()
@@ -31,7 +33,8 @@ class import2Mongo(object):
 			return []
 		return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
 
-i = import2Mongo("cht")
-i.Build()
-result = i.get('臺灣', 10)
-print(result)	
+if __name__ == "__main__":
+	i = import2Mongo("cht")
+	i.Build()
+	result = i.get('臺灣', 10)
+	print(result)	
