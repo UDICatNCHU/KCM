@@ -8,9 +8,7 @@ class import2Mongo(object):
 		self.lang = lang
 		self.client = MongoClient(uri)
 		self.db = self.client['nlp']
-		self.Collect = self.db['kcm']
-		self.index = self.db['kcmIndex']
-		
+		self.Collect = self.db['kcm']		
 
 	def Build(self):
 		import pyprind
@@ -30,10 +28,9 @@ class import2Mongo(object):
 		self.Collect.create_index([("key", pymongo.HASHED)])
 
 	def get(self, keyword, amount):
-		objectID = self.index.find({keyword:{'$exists':True}}).limit(1)
-		if objectID.count()==0:
+		result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
+		if result.count()==0:
 			return []
-		result = self.Collect.find({'_id':dict(list(objectID)[0])[keyword]}, {'value':1, '_id':False}).limit(1)
 		return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
 
 	def delDuplicate(self):
