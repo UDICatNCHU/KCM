@@ -9,10 +9,15 @@ class import2Mongo(object):
 		self.client = MongoClient(uri)
 		self.db = self.client['nlp']
 		self.Collect = self.db['kcm']
+		self.index = self.db['kcmIndex']
 		
 
 	def Build(self):
 		import pyprind
+		def buildIndex():
+			self.index.remove({})
+			indexArr = tuple({doc['key']:doc['_id']} for doc in self.Collect.find())
+			self.index.insert(indexArr)
 
 		self.Collect.remove({})
 		result = dict()
@@ -27,16 +32,24 @@ class import2Mongo(object):
 		del result
 
 		self.Collect.insert(documentArr)
+		buildIndex()
 
 	def get(self, keyword, amount):
-		result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
-		if result.count() == 0:
+		objectID = self.index.find({keyword:{'$exists':True}}).limit(1)
+		if objectID.count()==0:
 			return []
+		result = self.Collect.find({'_id':dict(list(objectID)[0])[keyword]}, {'value':1, '_id':False}).limit(1)
 		return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
 
 	def delDuplicate(self):
-		keywordSet = set(i['key'] for i in self.Collect.find())
-		for key in keywordSet:
+		import pyprind
+		bar = pyprind.ProgBar( self.Collect.find().count())
+		keywordSet = set()
+		for i in self.Collect.find():
+			keywordSet.add(i['key'])
+			bar.update()
+
+		for key in pyprind.prog_percent(keywordSet):
 			value = []
 			for dupkey in self.Collect.find({"key":key}):
 				value += dupkey['value']
@@ -55,4 +68,4 @@ if __name__ == "__main__":
 	i.Build()
 	result = i.get('臺灣', 10)
 	print(result)	
-	i.delDuplicate()
+	# i.delDuplicate()
