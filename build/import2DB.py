@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import json
+import json, pymongo
 from pymongo import MongoClient
 class import2Mongo(object):
 	"""docstring for import2Mongo"""
@@ -14,11 +14,6 @@ class import2Mongo(object):
 
 	def Build(self):
 		import pyprind
-		def buildIndex():
-			self.index.remove({})
-			indexArr = tuple({doc['key']:doc['_id']} for doc in self.Collect.find())
-			self.index.insert(indexArr)
-
 		self.Collect.remove({})
 		result = dict()
 
@@ -32,7 +27,7 @@ class import2Mongo(object):
 		del result
 
 		self.Collect.insert(documentArr)
-		buildIndex()
+		self.Collect.create_index([("key", pymongo.HASHED)])
 
 	def get(self, keyword, amount):
 		objectID = self.index.find({keyword:{'$exists':True}}).limit(1)
