@@ -56,7 +56,9 @@ class import2Mongo(object):
 
 
 if __name__ == "__main__":
-	i = import2Mongo("cht")
+	import urllib
+	p=urllib.parse.quote('udic@720')
+	i = import2Mongo("cht", 'mongodb://udic:'+p+'@140.120.13.243:27017')
 	i.Build()
 	result = i.get('臺灣', 10)
 	print(result)	
