@@ -13,19 +13,19 @@ class import2Mongo(object):
 	def Build(self):
 		import pyprind
 		self.Collect.remove({})
-		result = dict()
+		for lan in self.lang:
+			result = dict()
+			with open("../WikiRaw/{0}/{0}.model".format(lan), 'r', encoding='utf8') as f:
+				for i in f:
+					tmp = i.split()
+					result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
+					result.setdefault(tmp[1], []).append([tmp[0], int(tmp[2])])
 
-		with open("../WikiRaw/{0}/{0}.model".format(self.lang), 'r', encoding='utf8') as f:
-			for i in f:
-				tmp = i.split()
-				result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
-				result.setdefault(tmp[1], []).append([tmp[0], int(tmp[2])])
+			documentArr = tuple(map( lambda pair:{'key':pair[0], 'value':pair[1]}, pyprind.prog_percent(result.items())))
+			del result
 
-		documentArr = tuple( dict(key=index, value=value) for index, value in pyprind.prog_percent(result.items()))
-		del result
-
-		self.Collect.insert(documentArr)
-		self.Collect.create_index([("key", pymongo.HASHED)])
+			self.Collect.insert(documentArr)
+			self.Collect.create_index([("key", pymongo.HASHED)])
 
 	def get(self, keyword, amount):
 		result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
@@ -62,4 +62,5 @@ if __name__ == "__main__":
 	i.Build()
 	result = i.get('臺灣', 10)
 	print(result)	
-	# i.delDuplicate()
+	result = i.get('pizza', 10)
+	print(result)	
