@@ -12,4 +12,3 @@ subprocess.call(['python3', '-m', 'unittest',
                  'test/test_terms_to_term_pairs_freq.py',
                  'test/test_term_pair_freq_to_db.py',
                  ])
-
