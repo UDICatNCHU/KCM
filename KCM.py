@@ -15,7 +15,7 @@ class KCM(object):
 		self.Collect.remove({})
 		for lan in self.lang:
 			result = dict()
-			with open("../WikiRaw/{0}/{0}.model".format(lan), 'r', encoding='utf8') as f:
+			with open("WikiRaw/{0}/{0}.model".format(lan), 'r', encoding='utf8') as f:
 				for i in f:
 					tmp = i.split()
 					result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
@@ -32,28 +32,6 @@ class KCM(object):
 		if result.count()==0:
 			return []
 		return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
-
-	def delDuplicate(self):
-		import pyprind
-		bar = pyprind.ProgBar( self.Collect.find().count())
-		keywordSet = set()
-		for i in self.Collect.find():
-			keywordSet.add(i['key'])
-			bar.update()
-
-		for key in pyprind.prog_percent(keywordSet):
-			value = []
-			for dupkey in self.Collect.find({"key":key}):
-				value += dupkey['value']
-				self.Collect.remove({'_id':dupkey['_id']})
-
-			tmpDict = dict()
-			for tup in value:
-				tmpDict.setdefault(tup[0], 0)+int(tup[1])
-			valueArr = [[dictKey, dictValue]for dictKey, dictValue in tmpDict.items()]
-
-			self.Collect.insert({'key':key, 'value':valueArr})
-
 
 if __name__ == "__main__":
 	import urllib
