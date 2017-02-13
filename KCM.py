@@ -1,39 +1,66 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, json, queue, subprocess
-from collections import OrderedDict
-from pathlib import Path
-from functools import wraps
-
+import json, pymongo
+from pymongo import MongoClient
 class KCM(object):
-	""" A KCM object having api for web to query
-	Args:
-		filePath: path to ptt json file.
+	"""docstring for KCM"""
+	def __init__(self, lang, uri=None):
+		self.lang = lang
+		self.client = MongoClient(uri)
+		self.db = self.client['nlp']
+		self.Collect = self.db['kcm']		
 
-	Returns:
-		ptt articles with specific keyword.
-	"""
-	def __init__(self, num, missionType = 'model', ParentDir = ''):
-		self.ParentDir = ParentDir
-		self.DirPath = ''
-		self.WikiModelDirPath = 'WikiRaw'
-		self.JsonDirPath = 'json'
-		self.missionType = missionType
-		self.fname_extension = ''
-		self.queryNum = num
+	def Build(self):
+		import pyprind
+		self.Collect.remove({})
+		for lan in self.lang:
+			result = dict()
+			with open("../WikiRaw/{0}/{0}.model".format(lan), 'r', encoding='utf8') as f:
+				for i in f:
+					tmp = i.split()
+					result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
+					result.setdefault(tmp[1], []).append([tmp[0], int(tmp[2])])
 
-	def setMissionType(self, missionType):
-		self.missionType = missionType
+			documentArr = tuple(map( lambda pair:{'key':pair[0], 'value':pair[1]}, pyprind.prog_percent(result.items())))
+			del result
 
-	def setDirPath(func):
-		@wraps(func)
-		def wrap(self, *args, **kw):
-			self.DirPath = self.ParentDir + (self.WikiModelDirPath if self.missionType == 'model' else self.JsonDirPath)
-			self.fname_extension = 'model' if self.missionType == 'model' else 'json'
-			return func(self, *args, **kw)
-		return wrap
+			self.Collect.insert(documentArr)
+			self.Collect.create_index([("key", pymongo.HASHED)])
 
-	def hasFile(self, keyword):
-		file = Path(self.getFilePath(keyword))
-		if file.is_file():
-			return True
-		else: return False
+	def get(self, keyword, amount):
+		result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
+		if result.count()==0:
+			return []
+		return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
+
+	def delDuplicate(self):
+		import pyprind
+		bar = pyprind.ProgBar( self.Collect.find().count())
+		keywordSet = set()
+		for i in self.Collect.find():
+			keywordSet.add(i['key'])
+			bar.update()
+
+		for key in pyprind.prog_percent(keywordSet):
+			value = []
+			for dupkey in self.Collect.find({"key":key}):
+				value += dupkey['value']
+				self.Collect.remove({'_id':dupkey['_id']})
+
+			tmpDict = dict()
+			for tup in value:
+				tmpDict.setdefault(tup[0], 0)+int(tup[1])
+			valueArr = [[dictKey, dictValue]for dictKey, dictValue in tmpDict.items()]
+
+			self.Collect.insert({'key':key, 'value':valueArr})
+
+
+if __name__ == "__main__":
+	import urllib
+	p=urllib.parse.quote('udic@720')
+	i = KCM(["cht", 'eng'], 'mongodb://udic:'+p+'@140.120.13.243:27017')
+	i.Build()
+	result = i.get('臺灣', 10)
+	print(result)	
+	result = i.get('pizza', 10)
+	print(result)	
