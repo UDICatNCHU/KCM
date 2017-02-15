@@ -8,6 +8,9 @@ def get_args():
 	parser.add_argument('-wiki', '--wikiFile',
 						help='input raw wiki data file name (default: %(default)s)',
 						required=True)
+	parser.add_argument('-b', '--BASE_DIR',
+						help='BASE_DIR path (default: %(default)s)',
+						required=True)
 	parser.add_argument('-o', '--output_dir',
 						help='ouput data directory path (default: %(default)s)',
 						required=True)
@@ -24,12 +27,12 @@ class PreProcess(object):
 		def getFolderPre():
 			folderPre = re.search(r'wiki(.)+',self.wikiFile.split('.')[0])
 			return str(folderPre.group(0))
-		self.arg = arg
-		self.wikiFile = arg.wikiFile
+		self.BASE_DIR = arg.BASE_DIR
 		self.output_dir = arg.output_dir
+		self.wikiFile = arg.wikiFile
 		self.lang = arg.lang
 		self.folderPre = getFolderPre()
-		subprocess.call(['python2', 'preprocess_lib/WikiExtractor.py', self.wikiFile, '-o', self.output_dir])
+		subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/WikiExtractor.py', self.wikiFile, '-o', self.output_dir])
 
 
 	def rename_extrac_files_and_expand_jiebaDict(self):
@@ -59,12 +62,12 @@ class PreProcess(object):
 
 	def language(self, dir_path, file_name, langDir):
 		if self.lang == 'cht':
-			subprocess.call(['python2', 'preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_s.txt'])
+			subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_s.txt'])
 			subprocess.call(['opencc', '-i', dir_path + '/' + file_name, '-o', dir_path + '/' + file_name + '_tradCHT'])
-			subprocess.call(['python2', 'preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_trad.txt'])
+			subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_trad.txt'])
 			# detectPN 這個script會先把wiki_00這類的文章專有名詞先挑出來，加入到結巴的字典裏面，然後再把wiki轉成繁體字然後再挑專有名詞出來，所以會做出繁簡兩種字典擴充包
 		elif self.lang == 'eng':
-			subprocess.call(['python2', 'preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_eng.txt'])
+			subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_eng.txt'])
 
 
 def main():

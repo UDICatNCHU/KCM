@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import re, sys
 class ProperNoun(object):
 	"""docstring for ProperNoun"""
@@ -59,7 +60,7 @@ if __name__ == '__main__':
 	p = ProperNoun()
 	if len(sys.argv) < 3:
 		#sys.argv[0]是模組名稱喔!
-		print "Usage:\n\tpython[2] "+sys.argv[0]+" <wiki_00 這類型的檔案> <輸出的客製化jieba字典>"
+		print("Usage:\n\tpython[2] "+sys.argv[0]+" <wiki_00 這類型的檔案> <輸出的客製化jieba字典>")
 		sys.exit(1)#0為正常結束，其他數字exit會拋出一個例外，可以被捕獲
 	filename = sys.argv[1] # wiki_00這類型的原始檔
 	# 一行一行讀取然後抓出關鍵字
