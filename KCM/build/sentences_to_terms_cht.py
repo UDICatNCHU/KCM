@@ -6,13 +6,12 @@ Output format: '/詞1/詞2/詞2\n...'
 
 import jieba
 import jieba.posseg as pseg
-import argparse
 import os.path, sys
 
 
-def PosTokenizer(input, output, mission, save=None, remove=None):
-    jieba.load_userdict('dictionary/dict.txt.big.txt')
-    jieba.load_userdict("dictionary/NameDict_Ch_v2")
+def PosTokenizer(BASE_DIR, input, output, mission, save=None, remove=None):
+    jieba.load_userdict(os.path.join(BASE_DIR, 'dictionary', 'dict.txt.big.txt'))
+    jieba.load_userdict(os.path.join(BASE_DIR, "dictionary", "NameDict_Ch_v2"))
     f = open(input, 'r')
     f2 = open(output, 'a')
     if save != None and remove != None:

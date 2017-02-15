@@ -5,15 +5,19 @@
 This script is used to generate KCM/TCM (Term correlated model).
 The task is done by calling many other scripts
 """
+from KCM.build.rm_tags import rm_tags
+from KCM.build.paragraphs_to_sentences_cht import paragraphs_to_sentences_cht
+from KCM.build.sentences_to_terms_cht import PosTokenizer
+from KCM.build.terms_to_term_pair_freq import terms_to_term_pair_freq
+
 import json, pymongo
 from pymongo import MongoClient
-import os, queue, subprocess, time, logging, errno, argparse
+import os, queue, time, logging, errno, argparse
 from pathlib import Path
 from threading import Thread
 from djangoApiDec.djangoApiDec import timing, removeInputFile
 this_dir, this_filename = os.path.split(__file__)
-DATA_PATH = os.path.abspath(this_dir)
-print(DATA_PATH)
+BASE_DIR = os.path.abspath(this_dir)
 
 class KCM(object):
     """docstring for KCM"""
@@ -21,13 +25,14 @@ class KCM(object):
     '''args
     lang                help='language, english or chinese (eng/cht)', required=True)
     io_dir             help='input output directory, required=True)
-    max_file_count      help='maximum number of input files, 0 for no limit, type=int, default=1)
+    max_file_count      help='maximum number of input files, 0 for no limit, type=int, default=0)
     thread_count        help='number of thread used, type=int, default=1)
     '''
 
-    def __init__(self, max_file_count=1, thread_count=1,  uri=None):
+    def __init__(self, max_file_count=0, thread_count=1,  uri=None):
         self.lang = ''
-        self.io_dir = DATA_PATH
+        self.BASE_DIR = BASE_DIR
+        self.io_dir = self.BASE_DIR
         self.max_file_count = max_file_count
         self.thread_count = thread_count
 
@@ -96,8 +101,7 @@ class KCM(object):
         of_name = '{self.io_dir}/{prefix}_paragraph_{self.lang}'.format(**locals())
         self.remove_file_if_exist(of_name)
 
-        subprocess.call(['python3', 'build/rm_symbols_tags_empty_lines.py',
-                         '-i={}'.format(if_name), '-o={}'.format(of_name)])
+        rm_tags(if_name, of_name)
         return of_name
 
     @removeInputFile
@@ -117,9 +121,7 @@ class KCM(object):
         self.remove_file_if_exist(of_name)
         script_file = 'build/paragraphs_to_sentences_{}.py'.format(self.lang)
 
-        subprocess.call(['python3', script_file,
-                         '-i', if_name, '-o', of_name])
-
+        paragraphs_to_sentences_cht(if_name, of_name)
         return of_name
 
     @removeInputFile
@@ -139,8 +141,7 @@ class KCM(object):
         self.remove_file_if_exist(of_name)
         script_file = 'build/sentences_to_terms_{}.py'.format(self.lang)
 
-        subprocess.call(['python3', script_file,
-                         if_name, '-o', of_name, '-m', 'w', '-s', 'n'])
+        PosTokenizer(self.BASE_DIR, if_name, of_name, 'w', save='n')
 
         return of_name
 
@@ -160,7 +161,7 @@ class KCM(object):
         self.remove_file_if_exist(of_name)
         script_file = 'build/terms_to_term_pair_freq.py'
 
-        subprocess.call(['python3', script_file, '-i', if_name, '-o', of_name])
+        terms_to_term_pair_freq(if_name, of_name)
 
 
     # http://stackoverflow.com/questions/13613336/python-concatenate-text-files
@@ -214,11 +215,7 @@ class KCM(object):
     def main(self, lang, io_dir):
         """Main function"""
         self.lang = lang
-        print(io_dir)
-        print(self.io_dir)
-        print(self.lang)
         self.io_dir = os.path.join(self.io_dir, io_dir, self.lang)
-        print(self.io_dir)
 
         if_list = self.get_source_file_list()
 
@@ -251,7 +248,7 @@ class KCM(object):
         import pyprind
         
         result = dict()
-        with open("WikiRaw/{0}/{0}.model".format(self.lang), 'r', encoding='utf8') as f:
+        with open(os.path.join(self.io_dir, "{0}.model".format(self.lang)) , 'r', encoding='utf8') as f:
             for i in f:
                 tmp = i.split()
                 result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
@@ -271,7 +268,7 @@ class KCM(object):
 
 
 if __name__ == '__main__':
-    k = KCM(0, 4, None)
+    k = KCM()
     k.main('cht', 'WikiRaw/')
 
     print(k.get('臺灣', 10))
