@@ -1,6 +1,5 @@
-json
-WikiRaw/cht
-WikiRaw/bz2
+KCM/WikiRaw/cht
+*bz2
 # auto Created when execute gen_kcm.py
 .idea/
 .term_pair_freq*

@@ -11,6 +11,9 @@ import os, queue, subprocess, time, logging, errno, argparse
 from pathlib import Path
 from threading import Thread
 from djangoApiDec.djangoApiDec import timing, removeInputFile
+this_dir, this_filename = os.path.split(__file__)
+DATA_PATH = os.path.abspath(this_dir)
+print(DATA_PATH)
 
 class KCM(object):
     """docstring for KCM"""
@@ -24,7 +27,7 @@ class KCM(object):
 
     def __init__(self, max_file_count=1, thread_count=1,  uri=None):
         self.lang = ''
-        self.io_dir = ''
+        self.io_dir = DATA_PATH
         self.max_file_count = max_file_count
         self.thread_count = thread_count
 
@@ -211,7 +214,11 @@ class KCM(object):
     def main(self, lang, io_dir):
         """Main function"""
         self.lang = lang
-        self.io_dir = io_dir + self.lang
+        print(io_dir)
+        print(self.io_dir)
+        print(self.lang)
+        self.io_dir = os.path.join(self.io_dir, io_dir, self.lang)
+        print(self.io_dir)
 
         if_list = self.get_source_file_list()
 
