@@ -22,16 +22,17 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. OS：Ubuntu / OSX would be nice
 2. environment：need python3 `sudo apt-get update; sudo apt-get install; python3 python3-dev`
+3. (optional) 如果想使用Wiki資料做訓練，請先安裝: `sudo apt-get install -y opencc`
+4. (optional) 如果想要使用英文版Wiki做訓練，請先下載nltk訓練資料: `python3 -m nltk.downloader -d /usr/local/share/nltk_data all`
 
 ### Installing
 
-1. 下載 Download this project：`git clone https://github.com/UDICatNCHU/KCM.git`
-2. 使用虛擬環境 Use virtualenv is recommended：
+1. 使用虛擬環境 Use virtualenv is recommended：
   1. `virtualenv venv`
   2. 啟動方法 How to activate virtualenv
     1. for Linux：`. venv/bin/activate`
     2. for Windows：`venv\Scripts\activate`
-3. 安裝 Install：`make install`
+2. 安裝 Install：`pip install -e git://github.com/UDICatNCHU/KCM.git@master#egg=KCM`
 
 ## Running & Testing
 

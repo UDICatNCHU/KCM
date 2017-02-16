@@ -29,17 +29,16 @@ class KCM(object):
     thread_count        help='number of thread used, type=int, default=1)
     '''
 
-    def __init__(self, max_file_count=0, thread_count=1,  uri=None):
-        self.lang = ''
+    def __init__(self, lang, io_dir, max_file_count=0, thread_count=1,  uri=None):
         self.BASE_DIR = BASE_DIR
-        self.io_dir = self.BASE_DIR
+        self.lang = lang
+        self.io_dir = os.path.join(io_dir, self.lang)
         self.max_file_count = max_file_count
         self.thread_count = thread_count
 
         self.client = MongoClient(uri)
         self.db = self.client['nlp']
         self.Collect = self.db['kcm']  
-        self.Collect.remove({})
 
         logging.basicConfig(format='%(levelname)s : %(asctime)s : %(message)s', filename='KCM_{}.log'.format(self.lang), level=logging.INFO)
         logging.info('Begin gen_kcm.py')
@@ -217,11 +216,8 @@ class KCM(object):
             input_file_queue.task_done()
 
     @timing
-    def main(self, lang, io_dir):
+    def main(self):
         """Main function"""
-        self.lang = lang
-        self.io_dir = os.path.join(self.io_dir, io_dir, self.lang)
-
         if_list = self.get_source_file_list()
 
         term_files = []
@@ -249,6 +245,12 @@ class KCM(object):
         self.terms_to_term_pairs(of_name) 
         self.import2DB()
 
+    def setLang(self, lang):
+        self.lang = lang
+
+    def removeDB(self):
+        self.Collect.remove({})
+
     def import2DB(self):
         import pyprind
         
@@ -273,8 +275,9 @@ class KCM(object):
 
 
 if __name__ == '__main__':
-    k = KCM()
-    k.main('cht', 'WikiRaw/')
+    k = KCM('cht', 'WikiRaw/')
+    k.removeDB()
+    k.main()
 
     print(k.get('臺灣', 10))
     print(k.get('pizza', 10))
