@@ -252,7 +252,7 @@ class KCM(object):
                 result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
                 result.setdefault(tmp[1], []).append([tmp[0], int(tmp[2])])
 
-        documentArr = tuple(map( lambda pair:{'key':pair[0], 'value':pair[1]}, pyprind.prog_percent(result.items())))
+        documentArr = tuple(map( lambda pair:{'key':pair[0], 'value':sorted(pair[1], key=lambda x:-x[1])}, pyprind.prog_percent(result.items())))
         del result
 
         self.Collect.insert(documentArr)
@@ -262,7 +262,7 @@ class KCM(object):
         result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
         if result.count()==0:
             return []
-        return sorted(dict(list(result)[0])['value'], key=lambda x:-int(x[1]))[:amount]
+        return result[0]['value'][:amount]
 
 
 if __name__ == '__main__':
