@@ -46,8 +46,6 @@ class PreProcess(object):
 		for (dir_path, dir_names, file_names) in os.walk(self.output_dir):
 			if dir_names == []:
 				langDir = dir_path.split('/')[0]
-				for file_name in file_names:
-					self.language(dir_path, file_name, langDir)
 
 			for dirName in dir_names:
 				# wikiextract出來之後，結果會是AA、AB等等的資料夾名稱
@@ -60,14 +58,14 @@ class PreProcess(object):
 
 		return file_list
 
-	def language(self, dir_path, file_name, langDir):
-		if self.lang == 'cht':
-			subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_s.txt'])
-			subprocess.call(['opencc', '-i', dir_path + '/' + file_name, '-o', dir_path + '/' + file_name + '_tradCHT'])
-			subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_trad.txt'])
-			# detectPN 這個script會先把wiki_00這類的文章專有名詞先挑出來，加入到結巴的字典裏面，然後再把wiki轉成繁體字然後再挑專有名詞出來，所以會做出繁簡兩種字典擴充包
-		elif self.lang == 'eng':
-			subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_eng.txt'])
+	# def language(self, dir_path, file_name, langDir):
+	# 	if self.lang == 'cht':
+	# 		subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_s.txt'])
+	# 		subprocess.call(['opencc', '-i', dir_path + '/' + file_name, '-o', dir_path + '/' + file_name + '_tradCHT'])
+	# 		subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_trad.txt'])
+	# 		# detectPN 這個script會先把wiki_00這類的文章專有名詞先挑出來，加入到結巴的字典裏面，然後再把wiki轉成繁體字然後再挑專有名詞出來，所以會做出繁簡兩種字典擴充包
+	# 	elif self.lang == 'eng':
+	# 		subprocess.call(['python2', self.BASE_DIR + '/WikiRaw/preprocess_lib/detectPN.py', dir_path + '/' + file_name, langDir + '/' + 'jieba_expandDict_eng.txt'])
 
 
 def main():
