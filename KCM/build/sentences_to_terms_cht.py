@@ -9,15 +9,14 @@ import jieba.posseg as pseg
 import os.path, sys
 
 
-def PosTokenizer(BASE_DIR, input, output, mission, save=None, remove=None):
+def PosTokenizer(BASE_DIR, inputData, output, mission, save=None, remove=None):
     jieba.load_userdict(os.path.join(BASE_DIR, 'dictionary', 'dict.txt.big.txt'))
     jieba.load_userdict(os.path.join(BASE_DIR, "dictionary", "NameDict_Ch_v2"))
-    f = open(input, 'r')
     f2 = open(output, 'a')
     if save != None and remove != None:
         print('can\'t set save and remove at once')
     elif mission == 't':
-        for sentence in f:
+        for sentence in inputData:
             if sentence != '\n':
                 words = pseg.cut(sentence)
                 for word, flag in words:
@@ -32,7 +31,7 @@ def PosTokenizer(BASE_DIR, input, output, mission, save=None, remove=None):
                         f2.write('\n')
 
     elif mission == 'w' and (save != None or remove != None):
-        for sentence in f:
+        for sentence in inputData:
             if sentence != '\n':
                 words = pseg.cut(sentence)
                 for word, flag in words:
@@ -46,7 +45,7 @@ def PosTokenizer(BASE_DIR, input, output, mission, save=None, remove=None):
 
 
     elif mission == 'w' and save == None and remove == None:
-        for sentence in f.readlines():
+        for sentence in inputData:
             if sentence != '\n':
                 words = jieba.cut(sentence, cut_all=False)
                 for word in words:
@@ -55,7 +54,6 @@ def PosTokenizer(BASE_DIR, input, output, mission, save=None, remove=None):
                     else:
                         f2.write('\n')
 
-    f.close()
     f2.close()
 
 

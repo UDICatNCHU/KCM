@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-def rm_tags(if_name, of_name):
+def rm_tags(if_name):
     """Input text file, remove symbols, tags and empty lines, output to file"""
     def is_empty_line(line):
         """Return true if input string is an empty line
@@ -37,12 +37,20 @@ def rm_tags(if_name, of_name):
         """
         symbols = re.escape('[]《 》')
         return re.sub('[{symbols}]'.format(**locals()), '', line)
+
+    def condition(line):
+        if is_empty_line(line):
+            return False
+        if has_tag(line):
+            return False
+        line = symbols_removed(line)
+        return True
+
     """Main function"""
     with open(if_name, 'r', encoding='utf-8') as input_file:
-        with open(of_name, 'a', encoding='utf-8') as output_file:
-            for line in input_file:
-                if is_empty_line(line):
-                    continue
-                if has_tag(line):
-                    continue
-                output_file.write(symbols_removed(line))
+        for line in input_file:
+            if is_empty_line(line):
+                continue
+            if has_tag(line):
+                continue
+            yield symbols_removed(line)

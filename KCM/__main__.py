@@ -78,7 +78,7 @@ class KCM(object):
             for file_name in file_names:
                 if self.max_file_count and len(file_list) >= self.max_file_count:
                     break
-                if file_name == '.DS_Store':  # for OS X
+                if file_name == '.DS_Store' or '.model' in file_name:  # for OS X
                     continue
                 file_list.append(os.path.join(dir_path, file_name))
                 logging.info(
@@ -101,36 +101,27 @@ class KCM(object):
         Returns:
             output file name
         """
-        prefix = if_name.replace('/', '-').replace('_', '-')
-        of_name = '{self.io_dir}/{prefix}_paragraph_{self.lang}'.format(**locals())
-        self.remove_file_if_exist(of_name)
+        # prefix = if_name.replace('/', '-').replace('_', '-')
+        # of_name = '{self.io_dir}/{prefix}_paragraph_{self.lang}'.format(**locals())
+        # self.remove_file_if_exist(of_name)
 
-        rm_tags(if_name, of_name)
-        return of_name
+        return rm_tags(if_name)
 
-    @removeInputFile
     @timing
-    def paragraphs_to_sentences(self, if_name):
+    def paragraphs_to_sentences(self, inputData):
         """Generate sentences from paragraphs. Read input file, output to output file
 
         Args:
-            if_name: input file name
+            inputData: input data from former process.
             args: input arguments, use self.io_dir, self.lang
 
         Returns:
             output file name
         """
-        prefix = if_name.split('/')[-1].split('_')[0]
-        of_name = '{self.io_dir}/{prefix}_sentences_{self.lang}'.format(**locals())
-        self.remove_file_if_exist(of_name)
-        script_file = 'build/paragraphs_to_sentences_{}.py'.format(self.lang)
+        return paragraphs_to_sentences_cht(inputData)
 
-        paragraphs_to_sentences_cht(if_name, of_name)
-        return of_name
-
-    @removeInputFile
     @timing
-    def sentences_to_terms(self, if_name):
+    def sentences_to_terms(self, if_name, inputData):
         """generate terms from sentences
 
         Args:
@@ -142,10 +133,9 @@ class KCM(object):
         """
         prefix = if_name.split('/')[-1].split('_')[0]
         of_name = '{self.io_dir}/{prefix}_terms_{self.lang}'.format(**locals())
-        self.remove_file_if_exist(of_name)
-        script_file = 'build/sentences_to_terms_{}.py'.format(self.lang)
+        # script_file = 'build/sentences_to_terms_{}.py'.format(self.lang)
 
-        PosTokenizer(self.BASE_DIR, if_name, of_name, 'w', save='n')
+        PosTokenizer(self.BASE_DIR, inputData, of_name, 'w', save='n')
 
         return of_name
 
@@ -162,13 +152,12 @@ class KCM(object):
             output file name
         """
         of_name = '{self.io_dir}/{self.lang}.model'.format(**locals())
-        self.remove_file_if_exist(of_name)
         script_file = 'build/terms_to_term_pair_freq.py'
 
         terms_to_term_pair_freq(if_name, of_name)
 
 
-    # http://stackoverflow.com/questions/13613336/python-concatenate-text-files
+    @timing
     def join_terms_files(self, if_names):
         """Join terms files into one
 
@@ -182,6 +171,8 @@ class KCM(object):
                 with open(if_name, 'r') as input_file:
                     for line in input_file:
                         output_file.write(line)
+                    os.remove(if_name)
+
 
         return of_name
 
@@ -194,9 +185,9 @@ class KCM(object):
             args: input arguments
             o_list: output list saving generated file name
         """
-        of_name = self.remove_symbols_tags(if_name)
-        of_name = self.paragraphs_to_sentences(of_name)
-        of_name = self.sentences_to_terms(of_name)
+        result = self.remove_symbols_tags(if_name)
+        result = self.paragraphs_to_sentences(result)
+        of_name = self.sentences_to_terms(if_name, result)
         o_list.append(of_name)
 
 
