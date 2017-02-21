@@ -47,11 +47,6 @@ class KCM(object):
                      'maximum file count {self.max_file_count}, '
                      'use {self.thread_count} threads'.format(**locals()))
 
-    def download(self, lang):
-        import subprocess
-        subprocess.call(['bash', os.path.join(self.BASE_DIR, 'langConfig', lang+'.sh'), os.getcwd(), self.BASE_DIR])
-        print(os.getcwd())
-
     def remove_file_if_exist(self, file_name):
         """Remove file if it exist
 
@@ -208,7 +203,7 @@ class KCM(object):
 
     @timing
     def main(self):
-        """Main function"""
+        """main function"""
         if_list = self.get_source_file_list()
 
         term_files = []
@@ -238,6 +233,7 @@ class KCM(object):
 
     def setLang(self, lang):
         self.lang = lang
+        self.io_dir = os.path.join(io_dir, self.lang)
 
     def removeDB(self):
         self.Collect.remove({})
