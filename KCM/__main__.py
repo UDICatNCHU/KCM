@@ -47,17 +47,6 @@ class KCM(object):
                      'maximum file count {self.max_file_count}, '
                      'use {self.thread_count} threads'.format(**locals()))
 
-    def remove_file_if_exist(self, file_name):
-        """Remove file if it exist
-
-        Args:
-            file_name: name of the file to be removed
-        """
-        file = Path(file_name)
-        if file.is_file():
-            os.remove(file_name)
-
-
     def get_source_file_list(self):
         """Generate list of term data source files
 
@@ -98,7 +87,6 @@ class KCM(object):
         """
         # prefix = if_name.replace('/', '-').replace('_', '-')
         # of_name = '{self.io_dir}/{prefix}_paragraph_{self.lang}'.format(**locals())
-        # self.remove_file_if_exist(of_name)
 
         return rm_tags(if_name)
 
@@ -166,8 +154,6 @@ class KCM(object):
                 with open(if_name, 'r') as input_file:
                     for line in input_file:
                         output_file.write(line)
-                    os.remove(if_name)
-
 
         return of_name
 
