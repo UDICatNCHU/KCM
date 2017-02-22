@@ -3,7 +3,7 @@
 KCM API are also available now：[API Online Version](https://github.com/UDICatNCHU/udic-nlp-API)  
 
 不知道要寫啥  
-Now three languages are available:
+Now three languages are available：
 * Chinese
 * English
 
@@ -15,17 +15,21 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. OS：Ubuntu / OSX would be nice
 2. environment：need python3 `sudo apt-get update; sudo apt-get install; python3 python3-dev`
-3. (optional) 如果想使用Wiki資料做訓練，請先安裝: `sudo apt-get install -y opencc`
-4. (optional) 如果想要使用英文版Wiki做訓練，請先下載nltk訓練資料: `python3 -m nltk.downloader -d /usr/local/share/nltk_data all`
+3. (optional) 簡繁轉換：`sudo apt-get install -y opencc`
+4. (optional) 英文版Wiki，請先下載nltk：`python3 -m nltk.downloader -d /usr/local/share/nltk_data all`
+4. (optional) 用各論壇資料建立KCM模型：請先參照這篇產出輸入檔[KCM Data Source Extractor](https://github.com/UDICatNCHU/KCM-Data-Source-Extractor)
 
 ### Installing
 
-1. 使用虛擬環境 Use virtualenv is recommended：
-  1. `virtualenv venv`
-  2. 啟動方法 How to activate virtualenv
-    1. for Linux：`. venv/bin/activate`
-    2. for Windows：`venv\Scripts\activate`
-2. 安裝 Install：`pip install -e git://github.com/UDICatNCHU/KCM.git@master#egg=KCM`
+* Install By Docker：
+  1. You can only run this command in directory which has Dockerfile：`sudo docker build -t kcm .`
+* Install manually：
+  1. 使用虛擬環境 Use virtualenv is recommended：
+    1. `virtualenv venv`
+    2. 啟動方法 How to activate virtualenv
+      1. for Linux：`. venv/bin/activate`
+      2. for Windows：`venv\Scripts\activate`
+  2. 安裝 Install：`pip install -e git://github.com/UDICatNCHU/KCM.git@master#egg=KCM`
 
 ## Running & Testing
 
