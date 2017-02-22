@@ -15,7 +15,10 @@ ENV LANG=C.UTF-8
 RUN apt-get update && \
       apt-get -y install git python3 python python3-pip wget
 RUN git clone https://github.com/UDICatNCHU/KCM-Data-Source-Extractor.git
+WORKDIR KCM-Data-Source-Extractor
+RUN pip3 install -r requirements.txt
 RUN pip3 install -e git://github.com/UDICatNCHU/KCM.git@master#egg=KCM
+
 
 # 建立新容器時要執行的指令
 CMD ["bash"]
