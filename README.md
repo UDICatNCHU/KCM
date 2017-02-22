@@ -38,8 +38,10 @@ These instructions will get you a copy of the project up and running on your loc
 * 整體使用方法 Usage：
 
   * KCM物件的參數：
-    * 語言：cht `中文`、英文 `eng`
-    * 路徑：讀取建立model用的input檔的路徑
+    * lang：cht `中文`、英文 `eng`
+    * io_dir：讀取建立model用的input檔的路徑
+    * thread_count：輸入整數，為啟動的執行緒數量
+    * uri：Mongo連接網址，`mongodb://資料庫IP`
   * Instance Method：
     * main：建立模型的函式
     * setLang：選擇語系的函式，build會根據設定的語言到相對應的資料夾讀取input檔
