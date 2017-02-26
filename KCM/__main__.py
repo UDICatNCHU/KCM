@@ -85,9 +85,6 @@ class KCM(object):
         Returns:
             output file name
         """
-        # prefix = if_name.replace('/', '-').replace('_', '-')
-        # of_name = '{self.io_dir}/{prefix}_paragraph_{self.lang}'.format(**locals())
-
         return rm_tags(if_name)
 
     @timing
@@ -116,8 +113,6 @@ class KCM(object):
         """
         prefix = if_name.split('/')[-1].split('_')[0]
         of_name = '{self.io_dir}/{prefix}_terms_{self.lang}'.format(**locals())
-        # script_file = 'build/sentences_to_terms_{}.py'.format(self.lang)
-
         PosTokenizer(self.BASE_DIR, inputData, of_name, 'w', save='n')
 
         return of_name
