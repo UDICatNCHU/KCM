@@ -132,7 +132,7 @@ class KCM(object):
         of_name = '{self.io_dir}/{self.lang}.model'.format(**locals())
         script_file = 'build/terms_to_term_pair_freq.py'
 
-        terms_to_term_pair_freq(if_name, of_name)
+        terms_to_term_pair_freq(if_name, of_name, min_freq=1, max_term_len=20)
 
 
     @timing
