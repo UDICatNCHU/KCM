@@ -38,7 +38,7 @@ def PosTokenizer(BASE_DIR, inputData, output, mission, save=None, remove=None):
                     if word != '\n':
                         if remove != None and str(flag)[0] not in remove and str(flag) not in remove:
                             f2.write("/" + word)
-                        elif save != None and str(flag)[0] in save:
+                        elif save != None and (str(flag)[0] in save or flag in save):
                             f2.write("/" + word)
                     else:
                         f2.write('\n')
