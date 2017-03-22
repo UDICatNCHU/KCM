@@ -113,7 +113,7 @@ class KCM(object):
         """
         prefix = if_name.split('/')[-1].split('_')[0]
         of_name = '{self.io_dir}/{prefix}_terms_{self.lang}'.format(**locals())
-        PosTokenizer(self.BASE_DIR, inputData, of_name, 'w', save='n')
+        PosTokenizer(self.BASE_DIR, inputData, of_name, 'w', save=['n', 'l', 'eng', 'i', 'j', 's', 'vn'])
 
         return of_name
 
