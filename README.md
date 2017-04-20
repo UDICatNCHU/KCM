@@ -48,7 +48,7 @@ These instructions will get you a copy of the project up and running on your loc
     * removeDB：清空MongoDB
     * get：到MongoDB查詢結果
 
-  * 執行方法：
+  * 執行方法（二選一）：
     1. command line執行：`python3 src/kcm/KCM/__main__.py(或是你放kcm/__main__.py的路徑) -p 你放要建立模型輸入檔的地方`
     2.  
       ```
