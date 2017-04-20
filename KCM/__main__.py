@@ -241,11 +241,20 @@ class KCM(object):
             return []
         return result[0]['value'][:amount]
 
-
-if __name__ == '__main__':
-    k = KCM('cht', 'WikiRaw/')
+def main():
+    import argparse
+    """The main routine."""
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''
+        build kcm model and insert it into mongoDB with command line.    
+    ''')
+    parser.add_argument('-p', metavar='abosolute path', help='give absolute path of wiki input file', required=True)
+    args = parser.parse_args()
+    k = KCM('cht', args.p)
     k.removeDB()
     k.main()
 
     print(k.get('臺灣', 10))
     print(k.get('pizza', 10))
+
+if __name__ == "__main__":
+    main()

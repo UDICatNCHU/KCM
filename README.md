@@ -48,20 +48,23 @@ These instructions will get you a copy of the project up and running on your loc
     * removeDB：清空MongoDB
     * get：到MongoDB查詢結果
 
-  ```
-  from KCM.__main__ import KCM
-  k = KCM('cht', '含有輸入檔的資料夾路徑')
-  k.removeDB()
-  k.main()
+  * 執行方法：
+    1. command line執行：`python3 src/kcm/KCM/__main__.py(或是你放kcm/__main__.py的路徑) -p 你放要建立模型輸入檔的地方`
+    2.  
+      ```
+      from KCM.__main__ import KCM
+      k = KCM('cht', '含有輸入檔的資料夾路徑')
+      k.removeDB()
+      k.main()
 
-  print(k.get('美國隊長', 10))
-  ```
+      print(k.get('美國隊長', 10))
+      ```
 
-  ### Results
+      ### Results
 
-  the result of querying KCM model with keyword "Captain America"：
+      the result of querying KCM model with keyword "Captain America"：
 
-  ```
+      ```
   [
     ["電影",93],
     ["復仇者",78],
