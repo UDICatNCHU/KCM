@@ -47,7 +47,7 @@ These instructions will get you a copy of the project up and running on your loc
     * setLang：選擇語系的函式，build會根據設定的語言到相對應的資料夾讀取input檔
     * removeDB：清空MongoDB
     * get：到MongoDB查詢結果
-  * 執行方法：
+  * 執行方法（二選一）：
     1. command line執行：`python3 src/kcm/KCM/__main__.py(或是你放kcm/__main__.py的路徑) -p 你放要建立模型輸入檔的地方`
     2.  
       ```
