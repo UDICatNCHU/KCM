@@ -60,24 +60,24 @@ These instructions will get you a copy of the project up and running on your loc
       print(k.get('美國隊長', 10))
       ```
 
-      ### Results
+    ### Results
 
-      the result of querying KCM model with keyword "Captain America"：
+    the result of querying KCM model with keyword "Captain America"：
 
       ```
-  [
-    ["電影",93],
-    ["復仇者",78],
-    ["戰士",55],
-    ["英雄",55],
-    ["鋼鐵",52],
-    ["內戰",50],
-    ["復仇者聯盟",44],
-    ["漫畫",42],
-    ["酷寒",39],
-    ["巴基",36]
-  ]
-  ```
+      [
+        ["電影",93],
+        ["復仇者",78],
+        ["戰士",55],
+        ["英雄",55],
+        ["鋼鐵",52],
+        ["內戰",50],
+        ["復仇者聯盟",44],
+        ["漫畫",42],
+        ["酷寒",39],
+        ["巴基",36]
+      ]
+      ```
 
 
 
