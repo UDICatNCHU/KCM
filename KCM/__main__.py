@@ -16,6 +16,8 @@ import os, queue, time, logging, errno, argparse
 from pathlib import Path
 from threading import Thread
 from djangoApiDec.djangoApiDec import timing, removeInputFile
+from ngram import NGram
+
 this_dir, this_filename = os.path.split(__file__)
 BASE_DIR = os.path.abspath(this_dir)
 
@@ -40,6 +42,8 @@ class KCM(object):
         self.db = self.client['nlp']
         self.Collect = self.db['kcm']  
 
+        # ngram search
+        self.modelNgram = NGram((i['key'] for i in self.Collect.find({}, {'key':1, '_id':False})))
         logging.basicConfig(format='%(levelname)s : %(asctime)s : %(message)s', filename='KCM_{}.log'.format(self.lang), level=logging.INFO)
         logging.info('Begin gen_kcm.py')
         logging.info('input {self.max_file_count} files, '
@@ -238,7 +242,8 @@ class KCM(object):
     def get(self, keyword, amount):
         result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
         if result.count()==0:
-            return []
+            keyword = self.modelNgram.find(keyword)
+            result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
         return result[0]['value'][:amount]
 
 def main():
