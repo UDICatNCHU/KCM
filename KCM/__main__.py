@@ -243,7 +243,10 @@ class KCM(object):
         result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
         if result.count()==0:
             keyword = self.modelNgram.find(keyword)
-            result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
+            if keyword == None:
+                result =  db.wiki.find().limit(1)
+            else:
+                result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
         return result[0]['value'][:amount]
 
 def main():
