@@ -244,9 +244,9 @@ class KCM(object):
         if result.count()==0:
             keyword = self.modelNgram.find(keyword)
             if keyword == None:
-                return []
+                return {}
             result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
-        return result[0]['value'][:amount]
+        return {'key':keyword, 'value':result[0]['value'][:amount]}
 
 def main():
     import argparse
