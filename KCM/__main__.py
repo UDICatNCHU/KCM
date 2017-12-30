@@ -245,7 +245,7 @@ class KCM(object):
             ngramKeyword = self.kcmNgram.find(keyword)
             if ngramKeyword:
                 result = self.Collect.find({'key':ngramKeyword}, {'_id':False}).limit(1)
-                return {'key':keyword, 'value':result[0]['value'][:amount], 'similarity':self.kcmNgram.compare(keyword, ngramKeyword)}
+                return {'key':ngramKeyword, 'value':result[0]['value'][:amount], 'similarity':self.kcmNgram.compare(keyword, ngramKeyword)}
             return {'key':ngramKeyword, 'value':[], 'similarity':0}
 
 def main():
