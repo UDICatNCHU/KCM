@@ -43,7 +43,7 @@ class KCM(object):
         self.Collect = self.db['kcm']  
 
         # ngram search
-        self.modelNgram = NGram((i['key'] for i in self.Collect.find({}, {'key':1, '_id':False})))
+        self.kcmNgram = NGram((i['key'] for i in self.Collect.find({}, {'key':1, '_id':False})))
         logging.basicConfig(format='%(levelname)s : %(asctime)s : %(message)s', filename='KCM_{}.log'.format(self.lang), level=logging.INFO)
         logging.info('Begin gen_kcm.py')
         logging.info('input {self.max_file_count} files, '
@@ -117,7 +117,7 @@ class KCM(object):
         """
         prefix = if_name.split('/')[-1].split('_')[0]
         of_name = '{self.io_dir}/{prefix}_terms_{self.lang}'.format(**locals())
-        PosTokenizer(self.BASE_DIR, inputData, of_name, 'w', save=['n', 'l', 'eng', 'i', 'j', 's', 'vn'])
+        PosTokenizer(self.BASE_DIR, inputData, of_name, 'r')
 
         return of_name
 
@@ -223,9 +223,7 @@ class KCM(object):
     def removeDB(self):
         self.Collect.remove({})
 
-    def import2DB(self):
-        import pyprind
-        
+    def import2DB(self):        
         result = dict()
         with open(os.path.join(self.io_dir, "{0}.model".format(self.lang)) , 'r', encoding='utf8') as f:
             for i in f:
@@ -233,20 +231,22 @@ class KCM(object):
                 result.setdefault(tmp[0], []).append([tmp[1], int(tmp[2])])
                 result.setdefault(tmp[1], []).append([tmp[0], int(tmp[2])])
 
-        documentArr = tuple(map( lambda pair:{'key':pair[0], 'value':sorted(pair[1], key=lambda x:-x[1])}, pyprind.prog_percent(result.items())))
+        documentArr = [{'key':pair[0], 'value':sorted(pair[1], key=lambda x:-x[1])} for pair in result.items()]
         del result
 
         self.Collect.insert(documentArr)
         self.Collect.create_index([("key", pymongo.HASHED)])
 
     def get(self, keyword, amount):
-        result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
-        if result.count()==0:
-            keyword = self.modelNgram.find(keyword)
-            if keyword == None:
-                return {}
-            result = self.Collect.find({'key':keyword}, {'value':1, '_id':False}).limit(1)
-        return {'key':keyword, 'value':result[0]['value'][:amount]}
+        result = self.Collect.find({'key':keyword}, {'_id':False}).limit(1)
+        if result.count():
+            return {**(result[0]), 'similarity':1}
+        else:
+            ngramKeyword = self.kcmNgram.find(keyword)
+            if ngramKeyword:
+                result = self.Collect.find({'key':ngramKeyword}, {'_id':False}).limit(1)
+                return {'key':keyword, 'value':result[0]['value'][:amount], 'similarity':self.kcmNgram.compare(keyword, ngramKeyword)}
+            return {'key':ngramKeyword, 'value':[], 'similarity':0}
 
 def main():
     import argparse

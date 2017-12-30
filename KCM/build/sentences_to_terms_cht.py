@@ -6,12 +6,12 @@ Output format: '/詞1/詞2/詞2\n...'
 
 import jieba
 import jieba.posseg as pseg
+from udicOpenData.dictionary import *
+from udicOpenData.stopwords import rmsw
 import os.path, sys
 
 
 def PosTokenizer(BASE_DIR, inputData, output, mission, save=None, remove=None):
-    jieba.load_userdict(os.path.join(BASE_DIR, 'dictionary', 'dict.txt.big.txt'))
-    jieba.load_userdict(os.path.join(BASE_DIR, "dictionary", "NameDict_Ch_v2"))
     f2 = open(output, 'a')
     if save != None and remove != None:
         print('can\'t set save and remove at once')
@@ -53,7 +53,16 @@ def PosTokenizer(BASE_DIR, inputData, output, mission, save=None, remove=None):
                         f2.write(word + ' ')
                     else:
                         f2.write('\n')
-
+    elif mission == 'r':
+        # only remove stopwords
+        for sentence in inputData:
+            if sentence != '\n':
+                words = rmsw(sentence)
+                for word in words:
+                    if word != '\n':
+                        f2.write(word + ' ')
+                    else:
+                        f2.write('\n')
     f2.close()
 
 
