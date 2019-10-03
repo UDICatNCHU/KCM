@@ -15,7 +15,7 @@ setup(
     install_requires=[
         'djangoApiDec',
         'jieba',
-        'nltk==3.2.1',
+        'nltk==3.4.5',
         'numpy==1.11.2',
         'pathlib==1.0.1',
         'pyprind==2.9.9',
