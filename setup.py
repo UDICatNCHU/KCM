@@ -16,7 +16,7 @@ setup(
         'djangoApiDec',
         'jieba',
         'nltk==3.2.1',
-        'numpy==1.11.2',
+        'numpy==1.22.0',
         'pathlib==1.0.1',
         'pyprind==2.9.9',
         'pymongo',
